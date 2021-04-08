@@ -9,11 +9,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using UHLNoCS.Topologies;
 
 namespace UHLNoCS
 {
     public partial class MainForm : Form
     {
+        public static string CurrentTopology;
+
+        public static string CurrentTopologyArgument1;
+        public static string CurrentTopologyArgument2;
+        public static string CurrentTopologyArgument3;
+
+        public static string CurrentAlgorithm;
+
+        public static string CurrentAlgorithmArgument;
+
+        public static string CurrentXmlPath;
+
+        public static string TopologyDescription;
+        public static string TopologyNetlist;
+        public static string TopologyRouting;
+
         public MainForm()
         {
             InitializeComponent();
@@ -21,15 +38,17 @@ namespace UHLNoCS
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-
+            ResetParameters();
         }
 
         private void StartSimulationButton_Click(object sender, EventArgs e)
         {
+            ResetParameters();
             LogsTextBox.Clear();
 
             string ProgramPath = ProgramPathTextBox.Text;
-            string ProgramArguments = ProgramArgumentsTextBox.Text;
+            PrepareArguments(ProgramArgumentsTextBox.Text);
+            string ProgramArguments = CurrentXmlPath;
 
             Process Proc = new Process();
             Proc.StartInfo.FileName = ProgramPath;
@@ -131,6 +150,181 @@ namespace UHLNoCS
             {
                 LogsTextBox.Text += Text + "\r\n";
             }
+        }
+
+        private void ProgramArgumentsTextBox_DoubleClick(object sender, EventArgs e)
+        {
+            using (OpenFileDialog Dialog = new OpenFileDialog())
+            {
+                Dialog.InitialDirectory = Directory.GetCurrentDirectory();
+
+                if (Dialog.ShowDialog() == DialogResult.OK)
+                {
+                    string Path = Dialog.FileName;
+                    ProgramArgumentsTextBox.Text = Path;
+                }
+            }
+        }
+
+        private void PrepareArguments(string RawArguments)
+        {
+            string[] RawArgumentsParts = RawArguments.Split();
+
+            if (RawArgumentsParts.Length == 1)
+            {
+                CurrentXmlPath = RawArgumentsParts[0];
+            }
+            else
+            {
+                CurrentTopology = RawArgumentsParts[0];
+
+                if (CurrentTopology == Common.TopologyMesh)
+                {
+                    CurrentTopologyArgument1 = RawArgumentsParts[1];
+                    CurrentTopologyArgument2 = RawArgumentsParts[2];
+
+                    Mesh NewMesh = new Mesh(Int32.Parse(CurrentTopologyArgument1), Int32.Parse(CurrentTopologyArgument2));
+                    NewMesh.CreateNetlist();
+                    NewMesh.CreateRouting();
+
+                    TopologyNetlist = MatrixToString(NewMesh.GetNetlist());
+                    TopologyRouting = MatrixToString(NewMesh.GetRouting());
+                    TopologyDescription = CurrentTopology + "-(" + CurrentTopologyArgument1 + ", " + CurrentTopologyArgument2 + ")";
+
+                    Common.CreateXml(CurrentXmlPath, TopologyDescription, TopologyNetlist, TopologyRouting);
+                }
+
+                if (CurrentTopology == Common.TopologyTorus)
+                {
+                    CurrentTopologyArgument1 = RawArgumentsParts[1];
+                    CurrentTopologyArgument2 = RawArgumentsParts[2];
+
+                    Torus NewTorus = new Torus(Int32.Parse(CurrentTopologyArgument1), Int32.Parse(CurrentTopologyArgument2));
+                    NewTorus.CreateNetlist();
+                    NewTorus.CreateRouting();
+
+                    TopologyNetlist = MatrixToString(NewTorus.GetNetlist());
+                    TopologyRouting = MatrixToString(NewTorus.GetRouting());
+                    TopologyDescription = CurrentTopology + "-(" + CurrentTopologyArgument1 + ", " + CurrentTopologyArgument2 + ")";
+
+                    Common.CreateXml(CurrentXmlPath, TopologyDescription, TopologyNetlist, TopologyRouting);
+                }
+
+                if (CurrentTopology == Common.TopologyCirculant)
+                {
+                    CurrentTopologyArgument1 = RawArgumentsParts[1];
+                    CurrentTopologyArgument2 = RawArgumentsParts[2];
+                    CurrentTopologyArgument3 = RawArgumentsParts[3];
+
+                    if (RawArgumentsParts.Length == 4)
+                    {
+                        CurrentAlgorithm = Common.AlgorithmDijkstra;
+                    }
+                    else
+                    {
+                        CurrentAlgorithm = RawArgumentsParts[4];
+                        if (CurrentAlgorithm == Common.AlgorithmROU)
+                        {
+                            if (RawArgumentsParts.Length == 5)
+                            {
+                                CurrentAlgorithmArgument = "10";
+                            }
+                            else
+                            {
+                                CurrentAlgorithmArgument = RawArgumentsParts[5];
+                            }
+                        }
+                    }
+
+                    Circulant NewCirculant = new Circulant(Int32.Parse(CurrentTopologyArgument1), Int32.Parse(CurrentTopologyArgument2), Int32.Parse(CurrentTopologyArgument3));
+                    NewCirculant.CreateNetlist();
+                    NewCirculant.CreateRouting(NewCirculant.AdjacencyMatrix(NewCirculant.GetNetlist(), Int32.Parse(CurrentTopologyArgument1)), NewCirculant.GetNetlist());
+
+                    TopologyNetlist = MatrixToString(NewCirculant.GetNetlist());
+                    TopologyRouting = MatrixToString(NewCirculant.GetRouting());
+                    TopologyDescription = CurrentTopology + "-(" + CurrentTopologyArgument1 + ", " + CurrentTopologyArgument2 + ", " + CurrentTopologyArgument3 + ")";
+
+                    Common.CreateXml(CurrentXmlPath, TopologyDescription, TopologyNetlist, TopologyRouting);
+                }
+
+                if (CurrentTopology == Common.TopologyOptimalCirculant)
+                {
+                    CurrentTopologyArgument1 = RawArgumentsParts[1];
+
+                    if (RawArgumentsParts.Length == 2)
+                    {
+                        CurrentAlgorithm = Common.AlgorithmDijkstra;
+                    }
+                    else
+                    {
+                        CurrentAlgorithm = RawArgumentsParts[2];
+                        if (CurrentAlgorithm == Common.AlgorithmROU)
+                        {
+                            if (RawArgumentsParts.Length == 3)
+                            {
+                                CurrentAlgorithmArgument = "10";
+                            }
+                            else
+                            {
+                                CurrentAlgorithmArgument = RawArgumentsParts[4];
+                            }
+                        }
+                    }
+
+                    Circulant NewCirculant = new Circulant(Int32.Parse(CurrentTopologyArgument1));
+                    NewCirculant.CreateNetlist();
+                    NewCirculant.CreateRouting(NewCirculant.AdjacencyMatrix(NewCirculant.GetNetlist(), Int32.Parse(CurrentTopologyArgument1)), NewCirculant.GetNetlist());
+
+                    TopologyNetlist = MatrixToString(NewCirculant.GetNetlist());
+                    TopologyRouting = MatrixToString(NewCirculant.GetRouting());
+                    TopologyDescription = CurrentTopology + "-(" + CurrentTopologyArgument1 + ", " + NewCirculant.S1.ToString() + ", " + NewCirculant.S2.ToString() + ")";
+
+                    Common.CreateXml(CurrentXmlPath, TopologyDescription, TopologyNetlist, TopologyRouting);
+                }
+
+            }
+        }
+
+        private string MatrixToString(int[,] Matrix)
+        {
+            string Result = "\r\n";
+
+            int Rows = Matrix.GetLength(0);
+            int Cols = Matrix.GetLength(1);
+
+            for (int Row = 0; Row < Rows; Row++)
+            {
+                for (int Col = 0; Col < Cols; Col++)
+                {
+                    Result += Matrix[Row, Col].ToString();
+                    if (Col != Cols - 1)
+                    {
+                        Result += " ";
+                    }
+                }
+                Result += "\r\n";
+            }
+
+            return Result;
+        }
+
+        private void ResetParameters()
+        {
+            CurrentTopology = "";
+
+            CurrentTopologyArgument1 = "";
+            CurrentTopologyArgument2 = "";
+            CurrentTopologyArgument3 = "";
+
+            CurrentAlgorithm = "";
+
+            CurrentAlgorithmArgument = "";
+
+            CurrentXmlPath = Directory.GetCurrentDirectory() + "\\results\\LastSimulation\\config.xml";
+
+            TopologyDescription = "";
+            TopologyNetlist = "";
+            TopologyRouting = "";
         }
 
     }
