@@ -80,6 +80,7 @@
             this.ProgramArgumentsTextBox.Name = "ProgramArgumentsTextBox";
             this.ProgramArgumentsTextBox.Size = new System.Drawing.Size(400, 20);
             this.ProgramArgumentsTextBox.TabIndex = 4;
+            this.ProgramArgumentsTextBox.DoubleClick += new System.EventHandler(this.ProgramArgumentsTextBox_DoubleClick);
             // 
             // LogsTextBox
             // 
