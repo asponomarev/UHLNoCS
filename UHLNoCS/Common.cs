@@ -9,50 +9,105 @@ namespace UHLNoCS
 {
     class Common
     {
-        public static string TopologyMesh = "Mesh";
-        public static string TopologyTorus = "Torus";
-        public static string TopologyCirculant = "Circulant";
-        public static string TopologyOptimalCirculant = "CirculantOpt";
-
-        public static string AlgorithmDijkstra = "Dijkstra";
-        public static string AlgorithmPO = "PO";
-        public static string AlgorithmROU = "ROU";
-
-        public static void CreateXml(string Filename, string Description, string Netlist, string Routing)
+        public static string MatrixToString(int[,] Matrix)
         {
-            XNamespace Xsd = "http://www.w3.org/2001/XMLSchema";
-            XNamespace Xsi = "http://www.w3.org/2001/XMLSchema-instance";
-            XDocument Doc =
-                new XDocument(
-                    new XDeclaration("1.0", "UTF-8", "no"),
-                    new XElement("TaskOCNS",
-                            new XAttribute(XNamespace.Xmlns + "xsd", Xsd),
-                            new XAttribute(XNamespace.Xmlns + "xsi", Xsi),
-                            new XAttribute("Description", Description),
-                        new XElement("Network",
-                            new XElement("Netlist", Netlist),
-                            new XElement("Routing", Routing),
-                            new XElement("Link",
-                                new XElement("Parameter", new XAttribute("FifoSize", "4")),
-                                new XElement("Parameter", new XAttribute("FifoCount", "4"))
-                            )
-                        ),
-                        new XElement("Traffic",
-                            new XElement("Parameter", new XAttribute("FlitSize", "32")),
-                            new XElement("Parameter", new XAttribute("PacketSizeAvg", "10")),
-                            new XElement("Parameter", new XAttribute("PacketSizeIsFixed", "true")),
-                            new XElement("Parameter", new XAttribute("PacketPeriodAvg", "5"))
-                        ),
-                        new XElement("Simulation",
-                            new XElement("Parameter", new XAttribute("CountRun", "1")),
-                            new XElement("Parameter", new XAttribute("CountPacketRx", "1100")),
-                            new XElement("Parameter", new XAttribute("CountPacketRxWarmUp", "100")),
-                            new XElement("Parameter", new XAttribute("IsModeGALS", "false"))
-                        )
-                    )
-                );
-            Doc.Save(Filename);
+            string Result = "\r\n";
+
+            int Rows = Matrix.GetLength(0);
+            int Cols = Matrix.GetLength(1);
+
+            for (int Row = 0; Row < Rows; Row++)
+            {
+                for (int Col = 0; Col < Cols; Col++)
+                {
+                    Result += Matrix[Row, Col].ToString();
+                    if (Col != Cols - 1)
+                    {
+                        Result += " ";
+                    }
+                }
+                Result += "\r\n";
+            }
+
+            return Result;
         }
+
+        /*  старый код работы с новым процессом
+        Process Proc = new Process();
+            Proc.StartInfo.FileName = ProgramPath;
+            Proc.StartInfo.Arguments = ProgramArguments;
+            Proc.StartInfo.CreateNoWindow = true;
+
+            try
+            {
+                bool StartedOk = Proc.Start();
+                if (StartedOk)
+                {
+                    ToLogsTextBox(DateTime.Now.ToString());
+                    ToLogsTextBox("Process started");
+                    ToLogsTextBox(ProgramPath);
+                    ToLogsTextBox(ProgramArguments);
+
+                    Proc.WaitForExit();
+                    int ExitCode = Proc.ExitCode;
+
+                    ToLogsTextBox("Process finished with exit code " + ExitCode.ToString());
+
+                    Proc.Close();
+                    //
+                    string ResultPath = Directory.GetCurrentDirectory() + "\\results";
+                    string[] TmpDirs = Directory.GetDirectories(ResultPath);
+
+                    string LastDirName = "";
+                    DateTime LastDateTime = DateTime.MinValue;
+
+                    foreach (string Dir in TmpDirs)
+                    {
+                        if (Directory.GetLastWriteTime(Dir) > LastDateTime)
+                        {
+                            LastDirName = Dir;
+                            LastDateTime = Directory.GetLastWriteTime(Dir);
+                        }
+                    }
+                    //
+                    string[] TmpFiles = Directory.GetFiles(LastDirName);
+
+                    string LastFileName = "";
+                    LastDateTime = DateTime.MinValue;
+
+                    foreach (string FileName in TmpFiles)
+                    {
+                        if (File.GetLastWriteTime(FileName) > LastDateTime && FileName.EndsWith(".html"))
+                        {
+                            LastFileName = FileName;
+                            LastDateTime = File.GetLastWriteTime(FileName);
+                        }
+                    };
+                    //
+                    ResultsWebBrowser.Navigate(LastFileName);
+
+                    string Text = ResultsWebBrowser.DocumentText;
+
+                    Encoding utf8 = Encoding.GetEncoding("UTF-8");
+                    Encoding win1251 = Encoding.GetEncoding("Windows-1251");
+
+                    byte[] utf8Bytes = win1251.GetBytes(Text);
+                    byte[] win1251Bytes = Encoding.Convert(utf8, win1251, utf8Bytes);
+
+                    ResultsWebBrowser.DocumentText = Text;
+                    ResultsWebBrowser.Refresh();
+                }
+                else
+                {
+                    ToLogsTextBox("Process start failed");
+                }
+            }
+            catch (Exception Ex)
+            {
+                ToLogsTextBox("Error in process");
+                ToLogsTextBox(Ex.Message);
+            }
+        */
     }
 
 }

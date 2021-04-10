@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using UHLNoCS.Topologies;
 
 namespace UHLNoCS.Models
 {
@@ -163,5 +165,94 @@ namespace UHLNoCS.Models
         public void SetIsModeGALS(string NewIsModeGALS) { IsModeGALS = NewIsModeGALS; }
         public string GetIsModeGALS() { return IsModeGALS; }
 
+        public void PrepareForSimulation()
+        {
+            if (ConfigGenerationRequired)
+            {
+                PrepareForConfigGeneration();
+                GenerateConfigXml();
+            }
+        }
+
+        public void PrepareForConfigGeneration()
+        {
+            if (Topology == TopologiesTypes.Mesh)
+            {
+                Mesh NewMesh = new Mesh(Int32.Parse(TopologyArguments[0]), Int32.Parse(TopologyArguments[1]));
+                NewMesh.CreateNetlist();
+                NewMesh.CreateRouting();
+
+                TopologyNetlist = Common.MatrixToString(NewMesh.GetNetlist());
+                TopologyRouting = Common.MatrixToString(NewMesh.GetRouting());
+                TopologyDescription = Topology + "-(" + TopologyArguments[0] + ", " + TopologyArguments[1] + ")";
+            }
+            else if (Topology == TopologiesTypes.Torus)
+            {
+                Torus NewTorus = new Torus(Int32.Parse(TopologyArguments[0]), Int32.Parse(TopologyArguments[1]));
+                NewTorus.CreateNetlist();
+                NewTorus.CreateRouting();
+
+                TopologyNetlist = Common.MatrixToString(NewTorus.GetNetlist());
+                TopologyRouting = Common.MatrixToString(NewTorus.GetRouting());
+                TopologyDescription = Topology + "-(" + TopologyArguments[0] + ", " + TopologyArguments[1] + ")";
+            }
+            else if (Topology == TopologiesTypes.Circulant)
+            {
+                Circulant NewCirculant = new Circulant(Int32.Parse(TopologyArguments[0]), Int32.Parse(TopologyArguments[1]), Int32.Parse(TopologyArguments[2]));
+                NewCirculant.CreateNetlist();
+                NewCirculant.CreateRouting(NewCirculant.AdjacencyMatrix(NewCirculant.GetNetlist(), Int32.Parse(TopologyArguments[0])), NewCirculant.GetNetlist(), Algorithm, AlgorithmArguments);
+
+                TopologyNetlist = Common.MatrixToString(NewCirculant.GetNetlist());
+                TopologyRouting = Common.MatrixToString(NewCirculant.GetRouting());
+                TopologyDescription = Topology + "-(" + TopologyArguments[0] + ", " + TopologyArguments[1] + ", " + TopologyArguments[2] + ")";
+            }
+            else if (Topology == TopologiesTypes.OptimalCirculant)
+            {
+                Circulant NewCirculant = new Circulant(Int32.Parse(TopologyArguments[0]));
+                NewCirculant.CreateNetlist();
+                NewCirculant.CreateRouting(NewCirculant.AdjacencyMatrix(NewCirculant.GetNetlist(), Int32.Parse(TopologyArguments[0])), NewCirculant.GetNetlist(), Algorithm, AlgorithmArguments);
+
+                TopologyNetlist = Common.MatrixToString(NewCirculant.GetNetlist());
+                TopologyRouting = Common.MatrixToString(NewCirculant.GetRouting());
+                TopologyDescription = Topology + "-(" + TopologyArguments[0] + ", " + NewCirculant.S1.ToString() + ", " + NewCirculant.S2.ToString() + ")";
+            }
+
+        }
+
+        public void GenerateConfigXml()
+        {
+            XNamespace Xsd = "http://www.w3.org/2001/XMLSchema";
+            XNamespace Xsi = "http://www.w3.org/2001/XMLSchema-instance";
+            XDocument Doc =
+                new XDocument(
+                    new XDeclaration("1.0", "UTF-8", "no"),
+                    new XElement("TaskOCNS",
+                            new XAttribute(XNamespace.Xmlns + "xsd", Xsd),
+                            new XAttribute(XNamespace.Xmlns + "xsi", Xsi),
+                            new XAttribute("Description", TopologyDescription),
+                        new XElement("Network",
+                            new XElement("Netlist", TopologyNetlist),
+                            new XElement("Routing", TopologyRouting),
+                            new XElement("Link",
+                                new XElement("Parameter", new XAttribute("FifoSize", FifoSize)),
+                                new XElement("Parameter", new XAttribute("FifoCount", FifoCount))
+                            )
+                        ),
+                        new XElement("Traffic",
+                            new XElement("Parameter", new XAttribute("FlitSize", FlitSize)),
+                            new XElement("Parameter", new XAttribute("PacketSizeAvg", PacketSizeAvg)),
+                            new XElement("Parameter", new XAttribute("PacketSizeIsFixed", PacketSizeIsFixed)),
+                            new XElement("Parameter", new XAttribute("PacketPeriodAvg", PacketPeriodAvg))
+                        ),
+                        new XElement("Simulation",
+                            new XElement("Parameter", new XAttribute("CountRun", CountRun)),
+                            new XElement("Parameter", new XAttribute("CountPacketRx", CountPacketRx)),
+                            new XElement("Parameter", new XAttribute("CountPacketRxWarmUp", CountPacketRxWarmUp)),
+                            new XElement("Parameter", new XAttribute("IsModeGALS", IsModeGALS))
+                        )
+                    )
+                );
+            Doc.Save(ConfigFilePath);
+        }
     }
 }
