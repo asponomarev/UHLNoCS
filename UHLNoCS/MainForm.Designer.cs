@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.LogsTextBox = new System.Windows.Forms.TextBox();
-            this.TestButton = new System.Windows.Forms.Button();
+            this.PlsButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // LogsTextBox
@@ -39,25 +39,25 @@
             this.LogsTextBox.Multiline = true;
             this.LogsTextBox.Name = "LogsTextBox";
             this.LogsTextBox.ReadOnly = true;
-            this.LogsTextBox.Size = new System.Drawing.Size(400, 250);
+            this.LogsTextBox.Size = new System.Drawing.Size(400, 343);
             this.LogsTextBox.TabIndex = 5;
             // 
-            // TestButton
+            // PlsButton
             // 
-            this.TestButton.Location = new System.Drawing.Point(135, 299);
-            this.TestButton.Name = "TestButton";
-            this.TestButton.Size = new System.Drawing.Size(133, 23);
-            this.TestButton.TabIndex = 6;
-            this.TestButton.Text = "Run";
-            this.TestButton.UseVisualStyleBackColor = true;
-            this.TestButton.Click += new System.EventHandler(this.TestButton_Click);
+            this.PlsButton.Location = new System.Drawing.Point(141, 396);
+            this.PlsButton.Name = "PlsButton";
+            this.PlsButton.Size = new System.Drawing.Size(118, 23);
+            this.PlsButton.TabIndex = 6;
+            this.PlsButton.Text = "Pray";
+            this.PlsButton.UseVisualStyleBackColor = true;
+            this.PlsButton.Click += new System.EventHandler(this.PlsButton_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(984, 461);
-            this.Controls.Add(this.TestButton);
+            this.Controls.Add(this.PlsButton);
             this.Controls.Add(this.LogsTextBox);
             this.Name = "MainForm";
             this.Text = "UHLNoCS";
@@ -69,7 +69,7 @@
 
         #endregion
         private System.Windows.Forms.TextBox LogsTextBox;
-        private System.Windows.Forms.Button TestButton;
+        private System.Windows.Forms.Button PlsButton;
     }
 }
 

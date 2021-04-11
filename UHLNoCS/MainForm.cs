@@ -24,7 +24,7 @@ namespace UHLNoCS
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-                       
+
         }
 
         private void ToLogsTextBox(string Text)
@@ -39,13 +39,16 @@ namespace UHLNoCS
             }
         }
 
-        private void TestButton_Click(object sender, EventArgs e)
+        public void ControllerThreadTask()
         {
-            //DateTime TestStart = DateTime.Now;
+            ToLogsTextBox("Controller thread started");
+
+            DateTime TestStart = DateTime.Now;
+            ToLogsTextBox("Test started at " + TestStart.ToString());
 
             ToLogsTextBox("Models creation started");
 
-            string[] args1 = new string[2] { "3", "2" };
+            string[] args1 = new string[2] { "5", "4" };
             string[] algs1 = new string[1] { "10" };
             UOCNS Uocns1 = new UOCNS(ModelsTypes.UOCNS, "UOCNS1", "C:\\Users\\Lenovo\\Desktop\\VKR\\UOCNS\\jar\\UOCNS.jar",
                                     Directory.GetCurrentDirectory().ToString() + "\\test1", true,
@@ -55,7 +58,7 @@ namespace UHLNoCS
                                     UOCNS.DefaultPacketPeriodAvg, UOCNS.DefaultCountRun, UOCNS.DefaultCountPacketRx,
                                     UOCNS.DefaultCountPacketRxWarmUp, UOCNS.DefaultIsModeGALS);
 
-            string[] args2 = new string[2] { "2", "3" };
+            string[] args2 = new string[2] { "4", "5" };
             string[] algs2 = new string[1] { "10" };
             UOCNS Uocns2 = new UOCNS(ModelsTypes.UOCNS, "UOCNS2", "C:\\Users\\Lenovo\\Desktop\\VKR\\UOCNS\\jar\\UOCNS.jar",
                                     Directory.GetCurrentDirectory().ToString() + "\\test2", true,
@@ -67,24 +70,35 @@ namespace UHLNoCS
 
             ToLogsTextBox("Models creation finished");
 
-            Thread TestThread1 = new Thread(TestThreadTask);
+            Thread TestThread1 = new Thread(ModelThreadTask);
             TestThread1.IsBackground = true;
             TestThread1.Start(Uocns1);
 
-            Thread TestThread2 = new Thread(TestThreadTask);
-            TestThread2.IsBackground = true;
-            TestThread2.Start(Uocns2);
-
-            while (TestThread1.IsAlive && TestThread2.IsAlive)
+            Thread.Sleep(0);
+            while (TestThread1.IsAlive)
             {
                 Thread.Sleep(100);
             }
+            Thread.Sleep(100);
 
-            //DateTime TestEnd = DateTime.Now;
-            //ToLogsTextBox((TestEnd - TestStart).ToString());
+            Thread TestThread2 = new Thread(ModelThreadTask);
+            TestThread2.IsBackground = true;
+            TestThread2.Start(Uocns2);
+
+            Thread.Sleep(0);
+            while (TestThread2.IsAlive)
+            {
+                Thread.Sleep(100);
+            }
+            Thread.Sleep(100);
+
+            DateTime TestEnd = DateTime.Now;
+            ToLogsTextBox("Test execution time " + (TestEnd - TestStart).ToString());
+
+            ToLogsTextBox("Controller thread finished");
         }
 
-        public void TestThreadTask(object Model)
+        public void ModelThreadTask(object Model)
         {
             UOCNS Uocns = (UOCNS)Model;
 
@@ -111,5 +125,11 @@ namespace UHLNoCS
             ToLogsTextBox(Uocns.GetName() + " Simulation thread finished");
         }
 
+        private void PlsButton_Click(object sender, EventArgs e)
+        {
+            Thread ControllerThread = new Thread(ControllerThreadTask);
+            ControllerThread.IsBackground = true;
+            ControllerThread.Start();
+        }
     }
 }
