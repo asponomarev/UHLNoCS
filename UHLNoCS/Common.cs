@@ -32,6 +32,35 @@ namespace UHLNoCS
             return Result;
         }
 
+        public static string GetModelName(string ControlName)
+        {
+            string Result = "";
+
+            int DelimeterIndex = ControlName.IndexOf('_');
+            if (DelimeterIndex != ControlName.Length - 1)
+            {
+                Result = ControlName.Substring(DelimeterIndex + 1);
+            }
+
+            return Result;
+        }
+
+        public static string Concatenate(string[] Strings)
+        {
+            string Result = "";
+
+            for (int Index = 0; Index < Strings.Length; Index++)
+            {
+                Result += Strings[Index];
+                if (Index != Strings.Length - 1)
+                {
+                    Result += " ";
+                }
+            }
+
+            return Result;
+        }
+
         /*  старый код работы с новым процессом
         Process Proc = new Process();
             Proc.StartInfo.FileName = ProgramPath;

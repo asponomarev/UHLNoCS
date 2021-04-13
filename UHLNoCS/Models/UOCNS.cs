@@ -10,6 +10,8 @@ namespace UHLNoCS.Models
 {
     public class UOCNS : Model
     {
+        public static string DefaultConfigFileName = "config.xml";
+
         public static string DefaultFifoSize = "4";
         public static string DefaultFifoCount = "4";
 
@@ -253,6 +255,39 @@ namespace UHLNoCS.Models
                     )
                 );
             Doc.Save(ConfigFilePath);
+        }
+
+        public string PrintAllFields()
+        {
+            string Result = "";
+
+            Result += "Type: " + Type + "\r\n";
+            Result += "Name: " + Name + "\r\n";
+            Result += "ExeFilePath: " + ExecutableFilePath + "\r\n";
+            Result += "ResDir: " + ResultsDirectoryPath + "\r\n";
+            Result += "ConfigGenerationReq: " + ConfigGenerationRequired.ToString() + "\r\n";
+            Result += "ConfigFilePath: " + ConfigFilePath + "\r\n";
+            Result += "Topology: " + Topology + "\r\n";
+            Result += "TopologyArgs: ";
+            foreach (string Arg in TopologyArguments) { Result += Arg + " "; }
+            Result += "\r\nAlgorithm: " + Algorithm + "\r\n";
+            Result += "AlgorithmArgs: ";
+            foreach (string Arg in AlgorithmArguments) { Result += Arg + " "; }
+            Result += "\r\nFifoSize: " + FifoSize + "\r\n";
+            Result += "FifoCount: " + FifoCount + "\r\n";
+            Result += "FlitSize: " + FlitSize + "\r\n";
+            Result += "PacketSizeAvg: " + PacketSizeAvg + "\r\n";
+            Result += "PacketSizeIsFixed: " + PacketSizeIsFixed + "\r\n";
+            Result += "PacketPeriodAvg: " + PacketPeriodAvg + "\r\n";
+            Result += "CountRun: " + CountRun + "\r\n";
+            Result += "CountPacketRx: " + CountPacketRx + "\r\n";
+            Result += "CountPacketRxWarmUp: " + CountPacketRxWarmUp + "\r\n";
+            Result += "IsModeGALS: " + IsModeGALS + "\r\n";
+            Result += "TopologyNetlist: " + TopologyNetlist + "\r\n";
+            Result += "TopologyRouting: " + TopologyRouting + "\r\n";
+            Result += "TopologyDescription: " + TopologyDescription + "\r\n";
+
+            return Result;
         }
     }
 }
