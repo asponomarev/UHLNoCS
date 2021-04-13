@@ -66,14 +66,16 @@ namespace UHLNoCS
                         TextBox UocnsConfigFileTextBox = new TextBox();
                         UocnsConfigFileTextBox.DoubleClick += ModelExeTextBox_DoubleClick;
                         UocnsConfigFileTextBox.Name = UocnsConfigFilePathTextBoxName;
-                        UocnsConfigFileTextBox.Text = "Double-click to select";
-                        UocnsConfigFileTextBox.Size = new Size(400, 25);
+                        UocnsConfigFileTextBox.Text = "Will be set automatically";
+                        UocnsConfigFileTextBox.Size = new Size(600, 25);
+                        UocnsConfigFileTextBox.Enabled = false;
 
                         CheckBox UocnsConfigFileCheckBox = new CheckBox();
                         UocnsConfigFileCheckBox.Name = UocnsConfigGenerationRequiredCheckBoxName;
                         UocnsConfigFileCheckBox.Text = "Cofiguration file generation required";
                         UocnsConfigFileCheckBox.Size = new Size(300, 25);
-                        UocnsConfigFileCheckBox.CheckedChanged += UocnsConfigFileCheckBox_CheckedChanged; // TODO: implement
+                        UocnsConfigFileCheckBox.Checked = true;
+                        UocnsConfigFileCheckBox.CheckedChanged += UocnsConfigFileCheckBox_CheckedChanged;
                     //}
                     UocnsConfigFileLayoutPanel.Controls.AddRange(new Control[] { UocnsConfigFileLabel, UocnsConfigFileTextBox, UocnsConfigFileCheckBox });
 
@@ -87,11 +89,12 @@ namespace UHLNoCS
                         UocnsTopologyLabel.Size = new Size(150, 25);
 
                         ComboBox UocnsTopologyComboBox = new ComboBox();
-                        UocnsTopologyComboBox.SelectedIndexChanged += UocnsTopologyComboBox_SelectedIndexChanged; // TODO: implement
                         UocnsTopologyComboBox.Name = UocnsTopologyComboBoxName;
                         UocnsTopologyComboBox.Size = new Size(100, 25);
                         UocnsTopologyComboBox.Items.AddRange(new string[] { TopologiesTypes.Mesh, TopologiesTypes.Torus, TopologiesTypes.Circulant, TopologiesTypes.OptimalCirculant });
                         UocnsTopologyComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+                        UocnsTopologyComboBox.SelectedIndex = 0;
+                        UocnsTopologyComboBox.SelectedIndexChanged += UocnsTopologyComboBox_SelectedIndexChanged;
 
                         Label UocnsTopologyArgsLabel = new Label();
                         UocnsTopologyArgsLabel.Text = "Topology arguments";
@@ -100,7 +103,7 @@ namespace UHLNoCS
 
                         TextBox UocnsTopologyArgsTextBox = new TextBox();
                         UocnsTopologyArgsTextBox.Name = UocnsTopologyArgumentsTextBoxName;
-                        UocnsTopologyArgsTextBox.Text = "";
+                        UocnsTopologyArgsTextBox.Text = "2 2";
                         UocnsTopologyArgsTextBox.Size = new Size(100, 25);
                     //}
                     UocnsTopologyLayoutPanel.Controls.AddRange(new Control[] { UocnsTopologyLabel, UocnsTopologyComboBox, UocnsTopologyArgsLabel, UocnsTopologyArgsTextBox });
@@ -115,11 +118,12 @@ namespace UHLNoCS
                         UocnsAlgorithmLabel.Size = new Size(150, 25);
 
                         ComboBox UocnsAlgorithmComboBox = new ComboBox();
-                        UocnsAlgorithmComboBox.SelectedIndexChanged += UocnsAlgorithmComboBox_SelectedIndexChanged; // TODO: implement
                         UocnsAlgorithmComboBox.Name = UocnsAlgorithmComboBoxName;
                         UocnsAlgorithmComboBox.Size = new Size(100, 25);
                         UocnsAlgorithmComboBox.Items.AddRange(new string[] { AlgorithmsTypes.Dijkstra, AlgorithmsTypes.PO, AlgorithmsTypes.ROU });
                         UocnsAlgorithmComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+                        UocnsAlgorithmComboBox.Enabled = false;
+                        UocnsAlgorithmComboBox.SelectedIndexChanged += UocnsAlgorithmComboBox_SelectedIndexChanged;
 
                         Label UocnsAlgorithmArgsLabel = new Label();
                         UocnsAlgorithmArgsLabel.Text = "Algorithm arguments";
@@ -130,6 +134,7 @@ namespace UHLNoCS
                         UocnsAlgorithmArgsTextBox.Name = UocnsAlgorithmArgumentsTextBoxName;
                         UocnsAlgorithmArgsTextBox.Text = "";
                         UocnsAlgorithmArgsTextBox.Size = new Size(100, 25);
+                        UocnsAlgorithmArgsTextBox.Enabled = false;
                     //}
                     UocnsAlgorithmLayoutPanel.Controls.AddRange(new Control[] { UocnsAlgorithmLabel, UocnsAlgorithmComboBox, UocnsAlgorithmArgsLabel, UocnsAlgorithmArgsTextBox });
 
@@ -291,12 +296,14 @@ namespace UHLNoCS
                         CurrentButton.Text = "Current";
                         CurrentButton.Size = new Size(150, 25);
                         CurrentButton.Click += CurrentButton_Click;
+                        CurrentButton.Enabled = false;
 
                         Button SaveButton = new Button();
                         SaveButton.Name = ModelSaveButtonName;
                         SaveButton.Text = "Save";
                         SaveButton.Size = new Size(150, 25);
                         SaveButton.Click += SaveButton_Click;
+                        SaveButton.Enabled = false;
 
                         Button DeleteButton = new Button();
                         DeleteButton.Name = ModelDeleteButtonName;
@@ -340,42 +347,337 @@ namespace UHLNoCS
 
         private void UocnsConfigFileCheckBox_CheckedChanged(object sender, EventArgs e)
         {
+            string ModelName = Common.GetModelName(((CheckBox)sender).Name);
+            TextBox UocnsConfigFileTextBox = (TextBox)Pages.Controls.Find(UocnsConfigFilePathTextBoxName + ModelName, true)[0];
 
+            if (((CheckBox)Pages.Controls.Find(UocnsConfigGenerationRequiredCheckBoxName + ModelName, true)[0]).Checked)
+            {
+                if (ModelName == "")
+                {
+                    UocnsConfigFileTextBox.Text = "Will be set automatically";
+                }
+                else
+                {
+                    UocnsConfigFileTextBox.Text = ((UOCNS)SimulationController.FindModel(ModelName)).GetConfigFilePath();
+                }
+                UocnsConfigFileTextBox.Enabled = false;
+
+                ((ComboBox)Pages.Controls.Find(UocnsTopologyComboBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(UocnsTopologyArgumentsTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((ComboBox)Pages.Controls.Find(UocnsAlgorithmComboBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(UocnsAlgorithmArgumentsTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(UocnsFifoSizeTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(UocnsFifoCountTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(UocnsFlitSizeTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(UocnsPacketSizeAvgTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((ComboBox)Pages.Controls.Find(UocnsPacketSizeIsFixedComboBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(UocnsPacketPeriodAvgTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(UocnsCountRunTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(UocnsCountPacketRxTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(UocnsCountPacketRxWarmUpTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((ComboBox)Pages.Controls.Find(UocnsIsModeGALSComboBoxName + ModelName, true)[0]).Enabled = true;
+
+                UocnsAlgorithmComboBox_SelectedIndexChanged((ComboBox)Pages.Controls.Find(UocnsAlgorithmComboBoxName + ModelName, true)[0], new EventArgs());
+                UocnsTopologyComboBox_SelectedIndexChanged((ComboBox)Pages.Controls.Find(UocnsTopologyComboBoxName + ModelName, true)[0], new EventArgs());
+            }
+            else
+            {
+                UocnsConfigFileTextBox.Text = "Double-click to select";
+                UocnsConfigFileTextBox.Enabled = true;
+
+                ((ComboBox)Pages.Controls.Find(UocnsTopologyComboBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(UocnsTopologyArgumentsTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((ComboBox)Pages.Controls.Find(UocnsAlgorithmComboBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(UocnsAlgorithmArgumentsTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(UocnsFifoSizeTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(UocnsFifoCountTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(UocnsFlitSizeTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(UocnsPacketSizeAvgTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((ComboBox)Pages.Controls.Find(UocnsPacketSizeIsFixedComboBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(UocnsPacketPeriodAvgTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(UocnsCountRunTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(UocnsCountPacketRxTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(UocnsCountPacketRxWarmUpTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((ComboBox)Pages.Controls.Find(UocnsIsModeGALSComboBoxName + ModelName, true)[0]).Enabled = false;
+            }
         }
 
         private void UocnsAlgorithmComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            string ModelName = Common.GetModelName(((ComboBox)sender).Name);
+            TextBox UocnsAlgorithmArgumentsTextBox = (TextBox)Pages.Controls.Find(UocnsAlgorithmArgumentsTextBoxName + ModelName, true)[0];
 
+            if (((ComboBox)Pages.Controls.Find(UocnsAlgorithmComboBoxName + ModelName, true)[0]).Text == AlgorithmsTypes.ROU)
+            {
+                UocnsAlgorithmArgumentsTextBox.Enabled = true;
+                UocnsAlgorithmArgumentsTextBox.Text = "10";
+            }
+            else
+            {
+                UocnsAlgorithmArgumentsTextBox.Enabled = false;
+                UocnsAlgorithmArgumentsTextBox.Text = "";
+            }
         }
 
         private void UocnsTopologyComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            string ModelName = Common.GetModelName(((ComboBox)sender).Name);
+            string Topology = ((ComboBox)Pages.Controls.Find(UocnsTopologyComboBoxName + ModelName, true)[0]).Text;
 
+            if (Topology == TopologiesTypes.Circulant || Topology == TopologiesTypes.OptimalCirculant)
+            {
+                ((ComboBox)Pages.Controls.Find(UocnsAlgorithmComboBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(UocnsAlgorithmArgumentsTextBoxName + ModelName, true)[0]).Enabled = true;
+
+                UocnsAlgorithmComboBox_SelectedIndexChanged((ComboBox)Pages.Controls.Find(UocnsAlgorithmComboBoxName + ModelName, true)[0], new EventArgs());
+            }
+            else
+            {
+                ((ComboBox)Pages.Controls.Find(UocnsAlgorithmComboBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(UocnsAlgorithmArgumentsTextBoxName + ModelName, true)[0]).Enabled = false;
+            }
         }
 
         private void ModelResCheckBox_CheckedChanged(object sender, EventArgs e)
         {
+            string ModelName = Common.GetModelName(((CheckBox)sender).Name);
+            TextBox ModelResTextBox = (TextBox)Pages.Controls.Find(ModelResTextBoxName + ModelName, true)[0];
 
+            if (((CheckBox)Pages.Controls.Find(ModelResCheckBoxName + ModelName, true)[0]).Checked)
+            {
+                if (ModelName == "")
+                {
+                    ModelResTextBox.Text = "Will be set automatically";
+                }
+                else
+                {
+                    ModelResTextBox.Text = SimulationController.FindModel(ModelName).GetResultsDirectoryPath();
+                }
+                ModelResTextBox.Enabled = false;
+            }
+            else
+            {
+                ModelResTextBox.Text = "Double-click to select";
+                ModelResTextBox.Enabled = true;
+            }
         }
 
         private void AddButton_Click(object sender, EventArgs e)
         {
+            TextBox ModelNameTextBox = (TextBox)Pages.Controls.Find(ModelNameTextBoxName, true)[0];
+            string ModelName = ModelNameTextBox.Text;
+            ModelNameTextBox.Name += ModelName;
+            ModelNameTextBox.Enabled = false;
 
+            TabPage ModelPage = (TabPage)Pages.Controls.Find(ModelPageName, true)[0];
+            ModelPage.Name += ModelName;
+            ModelPage.Text = ModelName;
+
+            FlowLayoutPanel ModelPageLayoutPanel = (FlowLayoutPanel)ModelPage.Controls.Find(ModelPageLayoutPanelName, true)[0];
+            ModelPageLayoutPanel.Name += ModelName;
+
+            ComboBox ModelTypeComboBox = (ComboBox)ModelPage.Controls.Find(ModelTypeComboBoxName, true)[0];
+            string ModelType = ModelTypeComboBox.Text;
+            ModelTypeComboBox.Name += ModelName;
+
+            TextBox ModelExeTextBox = (TextBox)ModelPage.Controls.Find(ModelExeTextBoxName, true)[0];
+            string ModelExePath = ModelExeTextBox.Text;
+            ModelExeTextBox.Name += ModelName;
+
+            CheckBox ModelResCheckBox = (CheckBox)ModelPage.Controls.Find(ModelResCheckBoxName, true)[0];
+            ModelResCheckBox.Name += ModelName;
+
+            TextBox ModelResTextBox = (TextBox)ModelPage.Controls.Find(ModelResTextBoxName, true)[0];
+            ModelResTextBox.Name += ModelName;
+            string ModelResPath = "";
+            if (ModelResCheckBox.Checked)
+            {
+                ModelResPath = Directory.GetCurrentDirectory().ToString() + "\\" + SimulationFolderName + "\\" +
+                               SimulationController.SimulationName + "\\" + ModelName;
+                ModelResTextBox.Text = ModelResPath;
+            }
+            else
+            {
+                ModelResPath = ModelResTextBox.Text;
+            }
+
+            if (ModelType == ModelsTypes.UOCNS)
+            {
+                CheckBox UocnsConfigCheckBox = (CheckBox)ModelPage.Controls.Find(UocnsConfigGenerationRequiredCheckBoxName, true)[0];
+                UocnsConfigCheckBox.Name += ModelName;
+
+                TextBox UocnsConfigTextBox = (TextBox)ModelPage.Controls.Find(UocnsConfigFilePathTextBoxName, true)[0];
+                UocnsConfigTextBox.Name += ModelName;
+                string UocnsConfigPath = "";
+                if (UocnsConfigCheckBox.Checked)
+                {
+                    UocnsConfigPath = ModelResPath + "\\" + UOCNS.DefaultConfigFileName;
+                    UocnsConfigTextBox.Text = UocnsConfigPath;
+                }
+                else
+                {
+                    UocnsConfigPath = UocnsConfigTextBox.Text;
+                }
+
+                ComboBox UocnsTopologyComboBox = (ComboBox)ModelPage.Controls.Find(UocnsTopologyComboBoxName, true)[0];
+                string UocnsTopology = UocnsTopologyComboBox.Text;
+                UocnsTopologyComboBox.Name += ModelName;
+
+                TextBox UocnsTopologyArgsTextBox = (TextBox)ModelPage.Controls.Find(UocnsTopologyArgumentsTextBoxName, true)[0];
+                string[] UocnsTopologyArgs = UocnsTopologyArgsTextBox.Text.Split();
+                UocnsTopologyArgsTextBox.Name += ModelName;
+
+                ComboBox UocnsAlgorithmComboBox = (ComboBox)ModelPage.Controls.Find(UocnsAlgorithmComboBoxName, true)[0];
+                string UocnsAlgorithm = UocnsAlgorithmComboBox.Text;
+                UocnsAlgorithmComboBox.Name += ModelName;
+
+                TextBox UocnsAlgorithmArgsTextBox = (TextBox)ModelPage.Controls.Find(UocnsAlgorithmArgumentsTextBoxName, true)[0];
+                string[] UocnsAlgorithmArgs = UocnsAlgorithmArgsTextBox.Text.Split();
+                UocnsAlgorithmArgsTextBox.Name += ModelName;
+
+                TextBox UocnsFifoSizeTextBox = (TextBox)ModelPage.Controls.Find(UocnsFifoSizeTextBoxName, true)[0];
+                string UocnsFifoSize = UocnsFifoSizeTextBox.Text;
+                UocnsFifoSizeTextBox.Name += ModelName;
+
+                TextBox UocnsFifoCountTextBox = (TextBox)ModelPage.Controls.Find(UocnsFifoCountTextBoxName, true)[0];
+                string UocnsFifoCount = UocnsFifoCountTextBox.Text;
+                UocnsFifoCountTextBox.Name += ModelName;
+
+                TextBox UocnsFlitSizeTextBox = (TextBox)ModelPage.Controls.Find(UocnsFlitSizeTextBoxName, true)[0];
+                string UocnsFlitSize = UocnsFlitSizeTextBox.Text;
+                UocnsFlitSizeTextBox.Name += ModelName;
+
+                TextBox UocnsPacketSizeAvgTextBox = (TextBox)ModelPage.Controls.Find(UocnsPacketSizeAvgTextBoxName, true)[0];
+                string UocnsPacketSizeAvg = UocnsPacketSizeAvgTextBox.Text;
+                UocnsPacketSizeAvgTextBox.Name += ModelName;
+
+                ComboBox UocnsPacketSizeIsFixedComboBox = (ComboBox)ModelPage.Controls.Find(UocnsPacketSizeIsFixedComboBoxName, true)[0];
+                string UocnsPacketSizeIsFixed = UocnsPacketSizeIsFixedComboBox.Text;
+                UocnsPacketSizeIsFixedComboBox.Name += ModelName;
+
+                TextBox UocnsPacketPeriodAvgTextBox = (TextBox)ModelPage.Controls.Find(UocnsPacketPeriodAvgTextBoxName, true)[0];
+                string UocnsPacketPeriodAvg = UocnsPacketPeriodAvgTextBox.Text;
+                UocnsPacketPeriodAvgTextBox.Name += ModelName;
+
+                TextBox UocnsCountRunTextBox = (TextBox)ModelPage.Controls.Find(UocnsCountRunTextBoxName, true)[0];
+                string UocnsCountRun = UocnsCountRunTextBox.Text;
+                UocnsCountRunTextBox.Name += ModelName;
+
+                TextBox UocnsCountPacketRxTextBox = (TextBox)ModelPage.Controls.Find(UocnsCountPacketRxTextBoxName, true)[0];
+                string UocnsCountPacketRx = UocnsCountPacketRxTextBox.Text;
+                UocnsCountPacketRxTextBox.Name += ModelName;
+
+                TextBox UocnsCountPacketRxWarmUpTextBox = (TextBox)ModelPage.Controls.Find(UocnsCountPacketRxWarmUpTextBoxName, true)[0];
+                string UocnsCountPacketRxWarmUp = UocnsCountPacketRxWarmUpTextBox.Text;
+                UocnsCountPacketRxWarmUpTextBox.Name += ModelName;
+
+                ComboBox UocnsIsModeGALSComboBox = (ComboBox)ModelPage.Controls.Find(UocnsIsModeGALSComboBoxName, true)[0];
+                string UocnsIsModeGALS = UocnsIsModeGALSComboBox.Text;
+                UocnsIsModeGALSComboBox.Name += ModelName;
+
+                UOCNS Uocns = new UOCNS(ModelType, ModelName, ModelExePath, ModelResPath,
+                                        UocnsConfigCheckBox.Checked, UocnsConfigPath,
+                                        UocnsTopology, UocnsTopologyArgs, UocnsAlgorithm, UocnsAlgorithmArgs,
+                                        UocnsFifoSize, UocnsFifoCount, UocnsFlitSize, UocnsPacketSizeAvg,
+                                        UocnsPacketSizeIsFixed, UocnsPacketPeriodAvg, UocnsCountRun,
+                                        UocnsCountPacketRx, UocnsCountPacketRxWarmUp, UocnsIsModeGALS);
+
+                SimulationController.Models.Add(Uocns);
+            }
+
+            Button AddButton = (Button)ModelPage.Controls.Find(ModelAddButtonName, true)[0];
+            AddButton.Name += ModelName;
+            AddButton.Enabled = false;
+
+            Button CurrentButton = (Button)ModelPage.Controls.Find(ModelCurrentButtonName, true)[0];
+            CurrentButton.Name += ModelName;
+            CurrentButton.Enabled = true;
+
+            Button SaveButton = (Button)ModelPage.Controls.Find(ModelSaveButtonName, true)[0];
+            SaveButton.Name += ModelName;
+            SaveButton.Enabled = true;
+
+            Button DeleteButton = (Button)ModelPage.Controls.Find(ModelDeleteButtonName, true)[0];
+            DeleteButton.Name += ModelName;
+
+            ModelAddButton.Enabled = true;
         }
 
         private void CurrentButton_Click(object sender, EventArgs e)
         {
+            string ModelName = Common.GetModelName(((Button)sender).Name);
+            Model ConnectedModel = SimulationController.FindModel(ModelName);
 
+            TabPage ModelPage = (TabPage)Pages.Controls.Find(ModelPageName + ModelName, true)[0];
+
+            ((TextBox)ModelPage.Controls.Find(ModelExeTextBoxName + ModelName, true)[0]).Text = ConnectedModel.GetExecutableFilePath();
+            ((TextBox)ModelPage.Controls.Find(ModelResTextBoxName + ModelName, true)[0]).Text = ConnectedModel.GetResultsDirectoryPath();
+
+            if (ConnectedModel.GetType() == ModelsTypes.UOCNS)
+            {
+                UOCNS Uocns = (UOCNS)ConnectedModel;
+                ((TextBox)ModelPage.Controls.Find(UocnsConfigFilePathTextBoxName + ModelName, true)[0]).Text = Uocns.GetConfigFilePath();
+                ((CheckBox)ModelPage.Controls.Find(UocnsConfigGenerationRequiredCheckBoxName + ModelName, true)[0]).Checked = Uocns.GetConfigGenerationRequired();
+                ((ComboBox)ModelPage.Controls.Find(UocnsTopologyComboBoxName + ModelName, true)[0]).Text = Uocns.GetTopology();
+                ((TextBox)ModelPage.Controls.Find(UocnsTopologyArgumentsTextBoxName + ModelName, true)[0]).Text = Common.Concatenate(Uocns.GetTopologyArguments());
+                ((ComboBox)ModelPage.Controls.Find(UocnsAlgorithmComboBoxName + ModelName, true)[0]).Text = Uocns.GetAlgorithm();
+                ((TextBox)ModelPage.Controls.Find(UocnsAlgorithmArgumentsTextBoxName + ModelName, true)[0]).Text = Common.Concatenate(Uocns.GetAlgorithmArguments());
+                ((TextBox)ModelPage.Controls.Find(UocnsFifoSizeTextBoxName + ModelName, true)[0]).Text = Uocns.GetFifoSize();
+                ((TextBox)ModelPage.Controls.Find(UocnsFifoCountTextBoxName + ModelName, true)[0]).Text = Uocns.GetFifoCount();
+                ((TextBox)ModelPage.Controls.Find(UocnsFlitSizeTextBoxName + ModelName, true)[0]).Text = Uocns.GetFlitSize();
+                ((TextBox)ModelPage.Controls.Find(UocnsPacketSizeAvgTextBoxName + ModelName, true)[0]).Text = Uocns.GetPacketSizeAvg();
+                ((ComboBox)ModelPage.Controls.Find(UocnsPacketSizeIsFixedComboBoxName + ModelName, true)[0]).Text = Uocns.GetPacketSizeIsFixed();
+                ((TextBox)ModelPage.Controls.Find(UocnsPacketPeriodAvgTextBoxName + ModelName, true)[0]).Text = Uocns.GetPacketPeriodAvg();
+                ((TextBox)ModelPage.Controls.Find(UocnsCountRunTextBoxName + ModelName, true)[0]).Text = Uocns.GetCountRun();
+                ((TextBox)ModelPage.Controls.Find(UocnsCountPacketRxTextBoxName + ModelName, true)[0]).Text = Uocns.GetCountPacketRx();
+                ((TextBox)ModelPage.Controls.Find(UocnsCountPacketRxWarmUpTextBoxName + ModelName, true)[0]).Text = Uocns.GetCountPacketRxWarmUp();
+                ((ComboBox)ModelPage.Controls.Find(UocnsIsModeGALSComboBoxName + ModelName, true)[0]).Text = Uocns.GetIsModeGALS();
+            }
         }
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
+            string ModelName = Common.GetModelName(((Button)sender).Name);
+            int ModelIndex = SimulationController.FindModelIndex(ModelName);
 
+            TabPage ModelPage = (TabPage)Pages.Controls.Find(ModelPageName + ModelName, true)[0];
+
+            SimulationController.Models[ModelIndex].SetExecutableFilePath(((TextBox)ModelPage.Controls.Find(ModelExeTextBoxName + ModelName, true)[0]).Text);
+            SimulationController.Models[ModelIndex].SetResultsDirectoryPath(((TextBox)ModelPage.Controls.Find(ModelResTextBoxName + ModelName, true)[0]).Text);
+
+            if (SimulationController.Models[ModelIndex].GetType() == ModelsTypes.UOCNS)
+            {
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetConfigFilePath(((TextBox)ModelPage.Controls.Find(UocnsConfigFilePathTextBoxName + ModelName, true)[0]).Text);
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetConfigGenerationRequired(((CheckBox)ModelPage.Controls.Find(UocnsConfigGenerationRequiredCheckBoxName + ModelName, true)[0]).Checked);
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetTopology(((ComboBox)ModelPage.Controls.Find(UocnsTopologyComboBoxName + ModelName, true)[0]).Text);
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetTopologyArguments(((TextBox)ModelPage.Controls.Find(UocnsTopologyArgumentsTextBoxName + ModelName, true)[0]).Text.Split());
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetAlgorithm(((ComboBox)ModelPage.Controls.Find(UocnsAlgorithmComboBoxName + ModelName, true)[0]).Text);
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetAlgorithmArguments(((TextBox)ModelPage.Controls.Find(UocnsAlgorithmArgumentsTextBoxName + ModelName, true)[0]).Text.Split());
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetFifoSize(((TextBox)ModelPage.Controls.Find(UocnsFifoSizeTextBoxName + ModelName, true)[0]).Text);
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetFifoCount(((TextBox)ModelPage.Controls.Find(UocnsFifoCountTextBoxName + ModelName, true)[0]).Text);
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetFlitSize(((TextBox)ModelPage.Controls.Find(UocnsFlitSizeTextBoxName + ModelName, true)[0]).Text);
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetPacketSizeAvg(((TextBox)ModelPage.Controls.Find(UocnsPacketSizeAvgTextBoxName + ModelName, true)[0]).Text);
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetPacketSizeIsFixed(((ComboBox)ModelPage.Controls.Find(UocnsPacketSizeIsFixedComboBoxName + ModelName, true)[0]).Text);
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetPacketPeriodAvg(((TextBox)ModelPage.Controls.Find(UocnsPacketPeriodAvgTextBoxName + ModelName, true)[0]).Text);
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetCountRun(((TextBox)ModelPage.Controls.Find(UocnsCountRunTextBoxName + ModelName, true)[0]).Text);
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetCountPacketRx(((TextBox)ModelPage.Controls.Find(UocnsCountPacketRxTextBoxName + ModelName, true)[0]).Text);
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetCountPacketRxWarmUp(((TextBox)ModelPage.Controls.Find(UocnsCountPacketRxWarmUpTextBoxName + ModelName, true)[0]).Text);
+                ((UOCNS)SimulationController.Models[ModelIndex]).SetIsModeGALS(((ComboBox)ModelPage.Controls.Find(UocnsIsModeGALSComboBoxName + ModelName, true)[0]).Text);
+            }
         }
 
         private void DeleteButton_Click(object sender, EventArgs e)
         {
+            Pages.SelectedIndex = 0;
 
+            string ModelName = Common.GetModelName(((Button)sender).Name);
+
+            TabPage ModelPage = (TabPage)Pages.Controls.Find(ModelPageName + ModelName, true)[0];
+            Pages.Controls.Remove(ModelPage);
+
+            SimulationController.DeleteModel(ModelName);
+
+            ModelAddButton.Enabled = true;
         }
 
     }

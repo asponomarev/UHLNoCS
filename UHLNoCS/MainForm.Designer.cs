@@ -47,7 +47,8 @@
             this.LogsTextBox.Multiline = true;
             this.LogsTextBox.Name = "LogsTextBox";
             this.LogsTextBox.ReadOnly = true;
-            this.LogsTextBox.Size = new System.Drawing.Size(940, 495);
+            this.LogsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.LogsTextBox.Size = new System.Drawing.Size(990, 495);
             this.LogsTextBox.TabIndex = 5;
             // 
             // Pages
@@ -58,7 +59,7 @@
             this.Pages.Location = new System.Drawing.Point(12, 12);
             this.Pages.Name = "Pages";
             this.Pages.SelectedIndex = 0;
-            this.Pages.Size = new System.Drawing.Size(960, 562);
+            this.Pages.Size = new System.Drawing.Size(1010, 562);
             this.Pages.TabIndex = 6;
             // 
             // SettingsPage
@@ -67,7 +68,7 @@
             this.SettingsPage.Location = new System.Drawing.Point(4, 22);
             this.SettingsPage.Name = "SettingsPage";
             this.SettingsPage.Padding = new System.Windows.Forms.Padding(3);
-            this.SettingsPage.Size = new System.Drawing.Size(952, 536);
+            this.SettingsPage.Size = new System.Drawing.Size(1002, 536);
             this.SettingsPage.TabIndex = 0;
             this.SettingsPage.Text = "Settings";
             this.SettingsPage.UseVisualStyleBackColor = true;
@@ -89,14 +90,14 @@
             this.LogsPage.Location = new System.Drawing.Point(4, 22);
             this.LogsPage.Name = "LogsPage";
             this.LogsPage.Padding = new System.Windows.Forms.Padding(3);
-            this.LogsPage.Size = new System.Drawing.Size(952, 536);
+            this.LogsPage.Size = new System.Drawing.Size(1002, 536);
             this.LogsPage.TabIndex = 1;
             this.LogsPage.Text = "Logs";
             this.LogsPage.UseVisualStyleBackColor = true;
             // 
             // LogsButton
             // 
-            this.LogsButton.Location = new System.Drawing.Point(423, 507);
+            this.LogsButton.Location = new System.Drawing.Point(448, 507);
             this.LogsButton.Name = "LogsButton";
             this.LogsButton.Size = new System.Drawing.Size(106, 23);
             this.LogsButton.TabIndex = 6;
@@ -108,7 +109,7 @@
             // 
             this.ResultsPage.Location = new System.Drawing.Point(4, 22);
             this.ResultsPage.Name = "ResultsPage";
-            this.ResultsPage.Size = new System.Drawing.Size(952, 536);
+            this.ResultsPage.Size = new System.Drawing.Size(1002, 536);
             this.ResultsPage.TabIndex = 2;
             this.ResultsPage.Text = "Results";
             this.ResultsPage.UseVisualStyleBackColor = true;
@@ -117,7 +118,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 586);
+            this.ClientSize = new System.Drawing.Size(1034, 586);
             this.Controls.Add(this.Pages);
             this.Name = "MainForm";
             this.Text = "UHLNoCS";
