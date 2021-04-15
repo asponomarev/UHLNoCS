@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using UHLNoCS.Algorithms;
 using UHLNoCS.Models;
+using UHLNoCS.Simulation;
 using UHLNoCS.Topologies;
 
 namespace UHLNoCS
@@ -601,6 +602,14 @@ namespace UHLNoCS
             DeleteButton.Name += ModelName;
 
             ModelAddButton.Enabled = true;
+            DeleteModelButton.Enabled = true;
+            StartSimulationButton.Enabled = true;
+
+            string[] ModelState = new string[4] { ModelName, State.NoState, State.NoState, State.NoState};
+            ModelsStateTable.Rows.Add(ModelState);
+            ModelsStateTable.ClearSelection();
+            SimulationController.ModelsStates.Add(ModelState);
+            
         }
 
         private void CurrentButton_Click(object sender, EventArgs e)
@@ -672,12 +681,25 @@ namespace UHLNoCS
 
             string ModelName = Common.GetModelName(((Button)sender).Name);
 
+            if (ModelName != "")
+            {
+                int ModelIndex = SimulationController.FindModelIndex(ModelName);
+                SimulationController.ModelsStates.RemoveAt(ModelIndex);
+                ModelsStateTable.Rows.RemoveAt(ModelIndex);
+                ModelsStateTable.ClearSelection();
+            }
+
             TabPage ModelPage = (TabPage)Pages.Controls.Find(ModelPageName + ModelName, true)[0];
             Pages.Controls.Remove(ModelPage);
 
             SimulationController.DeleteModel(ModelName);
 
             ModelAddButton.Enabled = true;
+            if (SimulationController.Models.Count == 0)
+            {
+                DeleteModelButton.Enabled = false;
+                StartSimulationButton.Enabled = false;
+            }
         }
 
     }

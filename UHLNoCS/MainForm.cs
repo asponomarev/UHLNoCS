@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using UHLNoCS.Models;
+using UHLNoCS.Simulation;
 using UHLNoCS.Topologies;
 
 namespace UHLNoCS
@@ -26,6 +27,14 @@ namespace UHLNoCS
             InitializeComponent();
 
             SimulationController = new Controller();
+
+            SimulationNameTextBox.Text = SimulationController.SimulationName;   
+            
+            SimulationStateTable.RowTemplate.Height = 25;
+            SimulationStateTable.Rows.Add(SimulationController.SimulationState);
+
+            ModelsStateTable.RowTemplate.Height = 25;
+
         }
 
         private void MainForm_Load(object sender, EventArgs e)
