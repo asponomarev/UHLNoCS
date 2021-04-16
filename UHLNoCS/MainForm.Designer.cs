@@ -36,7 +36,15 @@
             this.Pages = new System.Windows.Forms.TabControl();
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.ModelsStateTable = new System.Windows.Forms.DataGridView();
+            this.ModelNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ModelPreparationProcessColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ModelSimulationProcessColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ModelCollectingResultsColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SimulationStateTable = new System.Windows.Forms.DataGridView();
+            this.AddingModelsProcessColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PreparationProcessColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SimulationProcessColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CollectingResultsProcessColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SimulationNameTextBox = new System.Windows.Forms.TextBox();
             this.DeleteModelButton = new System.Windows.Forms.Button();
             this.StopModelButton = new System.Windows.Forms.Button();
@@ -53,14 +61,6 @@
             this.LogsPage = new System.Windows.Forms.TabPage();
             this.LogsButton = new System.Windows.Forms.Button();
             this.ResultsPage = new System.Windows.Forms.TabPage();
-            this.ModelNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ModelPreparationProcessColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ModelSimulationProcessColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ModelCollectingResultsColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.AddingModelsProcessColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PreparationProcessColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SimulationProcessColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CollectingResultsProcessColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Pages.SuspendLayout();
             this.SettingsPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModelsStateTable)).BeginInit();
@@ -148,6 +148,42 @@
             this.ModelsStateTable.Size = new System.Drawing.Size(603, 273);
             this.ModelsStateTable.TabIndex = 14;
             // 
+            // ModelNameColumn
+            // 
+            this.ModelNameColumn.Frozen = true;
+            this.ModelNameColumn.HeaderText = "Model name";
+            this.ModelNameColumn.Name = "ModelNameColumn";
+            this.ModelNameColumn.ReadOnly = true;
+            this.ModelNameColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.ModelNameColumn.Width = 150;
+            // 
+            // ModelPreparationProcessColumn
+            // 
+            this.ModelPreparationProcessColumn.Frozen = true;
+            this.ModelPreparationProcessColumn.HeaderText = "Preparation for simulation";
+            this.ModelPreparationProcessColumn.Name = "ModelPreparationProcessColumn";
+            this.ModelPreparationProcessColumn.ReadOnly = true;
+            this.ModelPreparationProcessColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.ModelPreparationProcessColumn.Width = 150;
+            // 
+            // ModelSimulationProcessColumn
+            // 
+            this.ModelSimulationProcessColumn.Frozen = true;
+            this.ModelSimulationProcessColumn.HeaderText = "Simulation process";
+            this.ModelSimulationProcessColumn.Name = "ModelSimulationProcessColumn";
+            this.ModelSimulationProcessColumn.ReadOnly = true;
+            this.ModelSimulationProcessColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.ModelSimulationProcessColumn.Width = 150;
+            // 
+            // ModelCollectingResultsColumn
+            // 
+            this.ModelCollectingResultsColumn.Frozen = true;
+            this.ModelCollectingResultsColumn.HeaderText = "Collecting results";
+            this.ModelCollectingResultsColumn.Name = "ModelCollectingResultsColumn";
+            this.ModelCollectingResultsColumn.ReadOnly = true;
+            this.ModelCollectingResultsColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.ModelCollectingResultsColumn.Width = 150;
+            // 
             // SimulationStateTable
             // 
             this.SimulationStateTable.AllowUserToAddRows = false;
@@ -181,6 +217,42 @@
             this.SimulationStateTable.Size = new System.Drawing.Size(603, 50);
             this.SimulationStateTable.TabIndex = 13;
             this.SimulationStateTable.SelectionChanged += new System.EventHandler(this.SimulationStateTable_SelectionChanged);
+            // 
+            // AddingModelsProcessColumn
+            // 
+            this.AddingModelsProcessColumn.Frozen = true;
+            this.AddingModelsProcessColumn.HeaderText = "Adding models";
+            this.AddingModelsProcessColumn.Name = "AddingModelsProcessColumn";
+            this.AddingModelsProcessColumn.ReadOnly = true;
+            this.AddingModelsProcessColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.AddingModelsProcessColumn.Width = 150;
+            // 
+            // PreparationProcessColumn
+            // 
+            this.PreparationProcessColumn.Frozen = true;
+            this.PreparationProcessColumn.HeaderText = "Preparation for simulation";
+            this.PreparationProcessColumn.Name = "PreparationProcessColumn";
+            this.PreparationProcessColumn.ReadOnly = true;
+            this.PreparationProcessColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.PreparationProcessColumn.Width = 150;
+            // 
+            // SimulationProcessColumn
+            // 
+            this.SimulationProcessColumn.Frozen = true;
+            this.SimulationProcessColumn.HeaderText = "Simulation process";
+            this.SimulationProcessColumn.Name = "SimulationProcessColumn";
+            this.SimulationProcessColumn.ReadOnly = true;
+            this.SimulationProcessColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.SimulationProcessColumn.Width = 150;
+            // 
+            // CollectingResultsProcessColumn
+            // 
+            this.CollectingResultsProcessColumn.Frozen = true;
+            this.CollectingResultsProcessColumn.HeaderText = "Collecting results";
+            this.CollectingResultsProcessColumn.Name = "CollectingResultsProcessColumn";
+            this.CollectingResultsProcessColumn.ReadOnly = true;
+            this.CollectingResultsProcessColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.CollectingResultsProcessColumn.Width = 150;
             // 
             // SimulationNameTextBox
             // 
@@ -249,6 +321,7 @@
             this.StartSimulationButton.TabIndex = 6;
             this.StartSimulationButton.Text = "Start simulation";
             this.StartSimulationButton.UseVisualStyleBackColor = true;
+            this.StartSimulationButton.Click += new System.EventHandler(this.StartSimulationButton_Click);
             // 
             // NewSimulationButton
             // 
@@ -337,78 +410,6 @@
             this.ResultsPage.TabIndex = 2;
             this.ResultsPage.Text = "Results";
             this.ResultsPage.UseVisualStyleBackColor = true;
-            // 
-            // ModelNameColumn
-            // 
-            this.ModelNameColumn.Frozen = true;
-            this.ModelNameColumn.HeaderText = "Model name";
-            this.ModelNameColumn.Name = "ModelNameColumn";
-            this.ModelNameColumn.ReadOnly = true;
-            this.ModelNameColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.ModelNameColumn.Width = 150;
-            // 
-            // ModelPreparationProcessColumn
-            // 
-            this.ModelPreparationProcessColumn.Frozen = true;
-            this.ModelPreparationProcessColumn.HeaderText = "Preparation for simulation";
-            this.ModelPreparationProcessColumn.Name = "ModelPreparationProcessColumn";
-            this.ModelPreparationProcessColumn.ReadOnly = true;
-            this.ModelPreparationProcessColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.ModelPreparationProcessColumn.Width = 150;
-            // 
-            // ModelSimulationProcessColumn
-            // 
-            this.ModelSimulationProcessColumn.Frozen = true;
-            this.ModelSimulationProcessColumn.HeaderText = "Simulation process";
-            this.ModelSimulationProcessColumn.Name = "ModelSimulationProcessColumn";
-            this.ModelSimulationProcessColumn.ReadOnly = true;
-            this.ModelSimulationProcessColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.ModelSimulationProcessColumn.Width = 150;
-            // 
-            // ModelCollectingResultsColumn
-            // 
-            this.ModelCollectingResultsColumn.Frozen = true;
-            this.ModelCollectingResultsColumn.HeaderText = "Collecting results";
-            this.ModelCollectingResultsColumn.Name = "ModelCollectingResultsColumn";
-            this.ModelCollectingResultsColumn.ReadOnly = true;
-            this.ModelCollectingResultsColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.ModelCollectingResultsColumn.Width = 150;
-            // 
-            // AddingModelsProcessColumn
-            // 
-            this.AddingModelsProcessColumn.Frozen = true;
-            this.AddingModelsProcessColumn.HeaderText = "Adding models";
-            this.AddingModelsProcessColumn.Name = "AddingModelsProcessColumn";
-            this.AddingModelsProcessColumn.ReadOnly = true;
-            this.AddingModelsProcessColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.AddingModelsProcessColumn.Width = 150;
-            // 
-            // PreparationProcessColumn
-            // 
-            this.PreparationProcessColumn.Frozen = true;
-            this.PreparationProcessColumn.HeaderText = "Preparation for simulation";
-            this.PreparationProcessColumn.Name = "PreparationProcessColumn";
-            this.PreparationProcessColumn.ReadOnly = true;
-            this.PreparationProcessColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.PreparationProcessColumn.Width = 150;
-            // 
-            // SimulationProcessColumn
-            // 
-            this.SimulationProcessColumn.Frozen = true;
-            this.SimulationProcessColumn.HeaderText = "Simulation process";
-            this.SimulationProcessColumn.Name = "SimulationProcessColumn";
-            this.SimulationProcessColumn.ReadOnly = true;
-            this.SimulationProcessColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.SimulationProcessColumn.Width = 150;
-            // 
-            // CollectingResultsProcessColumn
-            // 
-            this.CollectingResultsProcessColumn.Frozen = true;
-            this.CollectingResultsProcessColumn.HeaderText = "Collecting results";
-            this.CollectingResultsProcessColumn.Name = "CollectingResultsProcessColumn";
-            this.CollectingResultsProcessColumn.ReadOnly = true;
-            this.CollectingResultsProcessColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.CollectingResultsProcessColumn.Width = 150;
             // 
             // MainForm
             // 
