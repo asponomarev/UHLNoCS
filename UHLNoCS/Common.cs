@@ -61,82 +61,45 @@ namespace UHLNoCS
             return Result;
         }
 
-        /*  старый код работы с новым процессом
-        Process Proc = new Process();
-            Proc.StartInfo.FileName = ProgramPath;
-            Proc.StartInfo.Arguments = ProgramArguments;
-            Proc.StartInfo.CreateNoWindow = true;
+        public static bool IsNameValid(string Name)
+        {
+            char[] InvalidSymbols = new char[] { '<', '>', ':', '"', '\\', '/', '|', '*', '?' };
+            string[] InvalidNames = new string[] { "CON", "PRN", "AUX", "NUL",
+                                                   "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+                                                   "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"};
 
-            try
+            if (Name == "") return false;
+            if (Name.EndsWith(".")) return false;
+            if (Name.EndsWith(" ")) return false;
+
+            foreach (char InvalidSymbol in InvalidSymbols)
             {
-                bool StartedOk = Proc.Start();
-                if (StartedOk)
-                {
-                    ToLogsTextBox(DateTime.Now.ToString());
-                    ToLogsTextBox("Process started");
-                    ToLogsTextBox(ProgramPath);
-                    ToLogsTextBox(ProgramArguments);
-
-                    Proc.WaitForExit();
-                    int ExitCode = Proc.ExitCode;
-
-                    ToLogsTextBox("Process finished with exit code " + ExitCode.ToString());
-
-                    Proc.Close();
-                    //
-                    string ResultPath = Directory.GetCurrentDirectory() + "\\results";
-                    string[] TmpDirs = Directory.GetDirectories(ResultPath);
-
-                    string LastDirName = "";
-                    DateTime LastDateTime = DateTime.MinValue;
-
-                    foreach (string Dir in TmpDirs)
-                    {
-                        if (Directory.GetLastWriteTime(Dir) > LastDateTime)
-                        {
-                            LastDirName = Dir;
-                            LastDateTime = Directory.GetLastWriteTime(Dir);
-                        }
-                    }
-                    //
-                    string[] TmpFiles = Directory.GetFiles(LastDirName);
-
-                    string LastFileName = "";
-                    LastDateTime = DateTime.MinValue;
-
-                    foreach (string FileName in TmpFiles)
-                    {
-                        if (File.GetLastWriteTime(FileName) > LastDateTime && FileName.EndsWith(".html"))
-                        {
-                            LastFileName = FileName;
-                            LastDateTime = File.GetLastWriteTime(FileName);
-                        }
-                    };
-                    //
-                    ResultsWebBrowser.Navigate(LastFileName);
-
-                    string Text = ResultsWebBrowser.DocumentText;
-
-                    Encoding utf8 = Encoding.GetEncoding("UTF-8");
-                    Encoding win1251 = Encoding.GetEncoding("Windows-1251");
-
-                    byte[] utf8Bytes = win1251.GetBytes(Text);
-                    byte[] win1251Bytes = Encoding.Convert(utf8, win1251, utf8Bytes);
-
-                    ResultsWebBrowser.DocumentText = Text;
-                    ResultsWebBrowser.Refresh();
-                }
-                else
-                {
-                    ToLogsTextBox("Process start failed");
-                }
+                if (Name.Contains(InvalidSymbol))
+                    return false;
             }
-            catch (Exception Ex)
+
+            foreach (string InvalidName in InvalidNames)
             {
-                ToLogsTextBox("Error in process");
-                ToLogsTextBox(Ex.Message);
+                if (Name.ToUpper() == InvalidName)
+                    return false;
             }
-        */
+
+            return true;
+        }
+
+        public static string ExtractValue(string HtmlString)
+        {
+            int IndexBefore = HtmlString.IndexOf('>');
+            int IndexAfter = HtmlString.IndexOf('<', IndexBefore);
+            string Value = HtmlString.Substring(IndexBefore + 1, IndexAfter - IndexBefore - 1);
+            if (Value.Contains(','))
+            {
+                Value = Value.Replace(',', '.');
+            }
+
+            return Value;
+        }
+
     }
 
 }

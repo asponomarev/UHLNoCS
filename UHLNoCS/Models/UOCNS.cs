@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace UHLNoCS.Models
     public class UOCNS : Model
     {
         public static string DefaultConfigFileName = "config.xml";
+        public static string DefaultResultFileName = "result.html";
 
         public static string DefaultFifoSize = "4";
         public static string DefaultFifoCount = "4";
@@ -257,37 +259,165 @@ namespace UHLNoCS.Models
             Doc.Save(ConfigFilePath);
         }
 
-        public string PrintAllFields()
+        public string[,] CollectSimulationResults()
         {
-            string Result = "";
+            string ResultsSectionHeader = "Конфигурация сети на кристалле:";
 
-            Result += "Type: " + Type + "\r\n";
-            Result += "Name: " + Name + "\r\n";
-            Result += "ExeFilePath: " + ExecutableFilePath + "\r\n";
-            Result += "ResDir: " + ResultsDirectoryPath + "\r\n";
-            Result += "ConfigGenerationReq: " + ConfigGenerationRequired.ToString() + "\r\n";
-            Result += "ConfigFilePath: " + ConfigFilePath + "\r\n";
-            Result += "Topology: " + Topology + "\r\n";
-            Result += "TopologyArgs: ";
-            foreach (string Arg in TopologyArguments) { Result += Arg + " "; }
-            Result += "\r\nAlgorithm: " + Algorithm + "\r\n";
-            Result += "AlgorithmArgs: ";
-            foreach (string Arg in AlgorithmArguments) { Result += Arg + " "; }
-            Result += "\r\nFifoSize: " + FifoSize + "\r\n";
-            Result += "FifoCount: " + FifoCount + "\r\n";
-            Result += "FlitSize: " + FlitSize + "\r\n";
-            Result += "PacketSizeAvg: " + PacketSizeAvg + "\r\n";
-            Result += "PacketSizeIsFixed: " + PacketSizeIsFixed + "\r\n";
-            Result += "PacketPeriodAvg: " + PacketPeriodAvg + "\r\n";
-            Result += "CountRun: " + CountRun + "\r\n";
-            Result += "CountPacketRx: " + CountPacketRx + "\r\n";
-            Result += "CountPacketRxWarmUp: " + CountPacketRxWarmUp + "\r\n";
-            Result += "IsModeGALS: " + IsModeGALS + "\r\n";
-            Result += "TopologyNetlist: " + TopologyNetlist + "\r\n";
-            Result += "TopologyRouting: " + TopologyRouting + "\r\n";
-            Result += "TopologyDescription: " + TopologyDescription + "\r\n";
+            int PacketsGenerationPeriodAvgLine = 40;
+            int PacketsGenerationPeriodAvgIndex = 0;
+
+            int ModellingTimeLine = 83;
+            int ModellingTimeIndex = 1;
+
+            int PacketsSentLine = 91;
+            int PacketsSentIndex = 2;
+
+            int PacketsReceivedLine = 97;
+            int PacketsReceivedIndex = 3;
+
+            int PacketGenerationErrorsLine = 103;
+            int PacketGenerationErrorsIndex = 4;
+
+            int PacketGenerationSpeedLine = 111;
+            int PacketGenerationSpeedIndex = 5;
+
+            int FlitsGenerationSpeedLine = 117;
+            int FlitsGenerationSpeedIndex = 6;
+
+            int FlitsSendingSpeedLine = 123;
+            int FlitsSendingSpeedIndex = 7;
+
+            int PacketsDeliveryTimeLine = 129;
+            int PacketsDeliveryTimeIndex = 8;
+
+            int PacketsHopsLine = 135;
+            int PacketsHopsIndex = 9;
+
+            int NetworkThroughoutLine = 143;
+            int NetworkThroughoutIndex = 10;
+
+            int RouterThroughoutLine = 149;
+            int RouterThroughoutIndex = 11;
+
+            int CoreReceivingBuffersLoadLine = 157;
+            int CoreReceivingBuffersLoadIndex = 12;
+
+            int CoreSendingBuffersLoadLine = 163;
+            int CoreSendingBuffersLoadIndex = 13;
+
+            int RouterReceivingBuffersLoadLine = 171;
+            int RouterReceivingBuffersLoadIndex = 14;
+
+            int RouterSendingBuffersLoadLine = 177;
+            int RouterSendingBuffersLoadIndex = 15;
+
+            int BuffersLoadLine = 185;
+            int BuffersLoadIndex = 16;
+
+            int PhysicChannelsLoadLine = 191;
+            int PhysicChannelsLoadIndex = 17;
+
+            int CharacteristicsAmount = 18;
+
+
+            int SectionsAmount = 0;
+            string[] ResultSections = File.ReadAllLines(ResultsDirectoryPath + "\\" + DefaultResultFileName);
+            foreach (string ResultString in ResultSections)
+            {
+                if (ResultString.Contains(ResultsSectionHeader))
+                {
+                    SectionsAmount++;
+                }
+            }
+            string[,] Result = new string[SectionsAmount, CharacteristicsAmount];
+
+            int SectionIndex = -1;
+            int SectionLineIndex = 0;
+            foreach (string ResultString in ResultSections)
+            {
+                if (ResultString.Contains(ResultsSectionHeader))
+                {
+                    SectionIndex++;
+                    SectionLineIndex = 0;
+                }
+                else if (SectionLineIndex == PacketsGenerationPeriodAvgLine)
+                {
+                    Result[SectionIndex, PacketsGenerationPeriodAvgIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == ModellingTimeLine)
+                {
+                    Result[SectionIndex, ModellingTimeIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == PacketsSentLine)
+                {
+                    Result[SectionIndex, PacketsSentIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == PacketsReceivedLine)
+                {
+                    Result[SectionIndex, PacketsReceivedIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == PacketGenerationErrorsLine)
+                {
+                    Result[SectionIndex, PacketGenerationErrorsIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == PacketGenerationSpeedLine)
+                {
+                    Result[SectionIndex, PacketGenerationSpeedIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == FlitsGenerationSpeedLine)
+                {
+                    Result[SectionIndex, FlitsGenerationSpeedIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == FlitsSendingSpeedLine)
+                {
+                    Result[SectionIndex, FlitsSendingSpeedIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == PacketsDeliveryTimeLine)
+                {
+                    Result[SectionIndex, PacketsDeliveryTimeIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == PacketsHopsLine)
+                {
+                    Result[SectionIndex, PacketsHopsIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == NetworkThroughoutLine)
+                {
+                    Result[SectionIndex, NetworkThroughoutIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == RouterThroughoutLine)
+                {
+                    Result[SectionIndex, RouterThroughoutIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == CoreReceivingBuffersLoadLine)
+                {
+                    Result[SectionIndex, CoreReceivingBuffersLoadIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == CoreSendingBuffersLoadLine)
+                {
+                    Result[SectionIndex, CoreSendingBuffersLoadIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == RouterReceivingBuffersLoadLine)
+                {
+                    Result[SectionIndex, RouterReceivingBuffersLoadIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == RouterSendingBuffersLoadLine)
+                {
+                    Result[SectionIndex, RouterSendingBuffersLoadIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == BuffersLoadLine)
+                {
+                    Result[SectionIndex, BuffersLoadIndex] = Common.ExtractValue(ResultString);
+                }
+                else if (SectionLineIndex == PhysicChannelsLoadLine)
+                {
+                    Result[SectionIndex, PhysicChannelsLoadIndex] = Common.ExtractValue(ResultString);
+                }
+
+                SectionLineIndex++;
+            }
 
             return Result;
         }
+
     }
 }

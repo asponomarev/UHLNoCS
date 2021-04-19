@@ -69,6 +69,7 @@ namespace UHLNoCS
                         UocnsConfigFileTextBox.Name = UocnsConfigFilePathTextBoxName;
                         UocnsConfigFileTextBox.Text = "Will be set automatically";
                         UocnsConfigFileTextBox.Size = new Size(600, 25);
+                        UocnsConfigFileTextBox.ReadOnly = true;
                         UocnsConfigFileTextBox.Enabled = false;
 
                         CheckBox UocnsConfigFileCheckBox = new CheckBox();
@@ -466,7 +467,22 @@ namespace UHLNoCS
         private void AddButton_Click(object sender, EventArgs e)
         {
             TextBox ModelNameTextBox = (TextBox)Pages.Controls.Find(ModelNameTextBoxName, true)[0];
-            string ModelName = ModelNameTextBox.Text;
+            string ModelName = ModelNameTextBox.Text;            
+           
+            int AlreadyExists = SimulationController.FindModelIndex(ModelName);
+            if (AlreadyExists != -1)
+            {
+                MessageBox.Show("Model names may not be equal", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            bool Valid = Common.IsNameValid(ModelName);
+            if (!Valid)
+            {
+                MessageBox.Show("Invalid model name", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             ModelNameTextBox.Name += ModelName;
             ModelNameTextBox.Enabled = false;
 
@@ -609,7 +625,13 @@ namespace UHLNoCS
             ModelsStateTable.Rows.Add(ModelState);
             ModelsStateTable.ClearSelection();
             SimulationController.ModelsStates.Add(ModelState);
-            
+          
+            TabPage ModelResultsPage = new TabPage();
+            ModelResultsPage.Text = ModelName;
+            ModelsResultsPages.TabPages.Add(ModelResultsPage);
+
+            ModelResultsTable TableControl = new ModelResultsTable();
+            ModelResultsPage.Controls.Add(TableControl);
         }
 
         private void CurrentButton_Click(object sender, EventArgs e)
@@ -646,6 +668,12 @@ namespace UHLNoCS
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
+            if (SimulationController.SimulationState[0] != State.InProgress)
+            {
+                MessageBox.Show("It is possible to change model parameters only in ADDING MODELS simulation state", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             string ModelName = Common.GetModelName(((Button)sender).Name);
             int ModelIndex = SimulationController.FindModelIndex(ModelName);
 
@@ -677,6 +705,12 @@ namespace UHLNoCS
 
         private void DeleteButton_Click(object sender, EventArgs e)
         {
+            if (SimulationController.SimulationState[0] != State.InProgress)
+            {
+                MessageBox.Show("It is possible to delete model only in ADDING MODELS simulation state", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             Pages.SelectedIndex = 0;
 
             string ModelName = Common.GetModelName(((Button)sender).Name);
@@ -687,6 +721,7 @@ namespace UHLNoCS
                 SimulationController.ModelsStates.RemoveAt(ModelIndex);
                 ModelsStateTable.Rows.RemoveAt(ModelIndex);
                 ModelsStateTable.ClearSelection();
+                ModelsResultsPages.TabPages.RemoveAt(ModelIndex);
             }
 
             TabPage ModelPage = (TabPage)Pages.Controls.Find(ModelPageName + ModelName, true)[0];

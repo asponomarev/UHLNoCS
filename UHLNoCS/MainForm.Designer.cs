@@ -48,9 +48,7 @@
             this.SimulationNameTextBox = new System.Windows.Forms.TextBox();
             this.DeleteModelButton = new System.Windows.Forms.Button();
             this.StopModelButton = new System.Windows.Forms.Button();
-            this.PauseModelButton = new System.Windows.Forms.Button();
             this.StopSimulationButton = new System.Windows.Forms.Button();
-            this.PauseSimulationButton = new System.Windows.Forms.Button();
             this.StartSimulationButton = new System.Windows.Forms.Button();
             this.NewSimulationButton = new System.Windows.Forms.Button();
             this.SimulationNameButton = new System.Windows.Forms.Button();
@@ -61,11 +59,14 @@
             this.LogsPage = new System.Windows.Forms.TabPage();
             this.LogsButton = new System.Windows.Forms.Button();
             this.ResultsPage = new System.Windows.Forms.TabPage();
+            this.ExportResultsButton = new System.Windows.Forms.Button();
+            this.ModelsResultsPages = new System.Windows.Forms.TabControl();
             this.Pages.SuspendLayout();
             this.SettingsPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModelsStateTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SimulationStateTable)).BeginInit();
             this.LogsPage.SuspendLayout();
+            this.ResultsPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // LogsTextBox
@@ -76,7 +77,7 @@
             this.LogsTextBox.Name = "LogsTextBox";
             this.LogsTextBox.ReadOnly = true;
             this.LogsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.LogsTextBox.Size = new System.Drawing.Size(990, 495);
+            this.LogsTextBox.Size = new System.Drawing.Size(1140, 495);
             this.LogsTextBox.TabIndex = 5;
             // 
             // Pages
@@ -87,7 +88,7 @@
             this.Pages.Location = new System.Drawing.Point(12, 12);
             this.Pages.Name = "Pages";
             this.Pages.SelectedIndex = 0;
-            this.Pages.Size = new System.Drawing.Size(1010, 562);
+            this.Pages.Size = new System.Drawing.Size(1160, 562);
             this.Pages.TabIndex = 6;
             // 
             // SettingsPage
@@ -97,9 +98,7 @@
             this.SettingsPage.Controls.Add(this.SimulationNameTextBox);
             this.SettingsPage.Controls.Add(this.DeleteModelButton);
             this.SettingsPage.Controls.Add(this.StopModelButton);
-            this.SettingsPage.Controls.Add(this.PauseModelButton);
             this.SettingsPage.Controls.Add(this.StopSimulationButton);
-            this.SettingsPage.Controls.Add(this.PauseSimulationButton);
             this.SettingsPage.Controls.Add(this.StartSimulationButton);
             this.SettingsPage.Controls.Add(this.NewSimulationButton);
             this.SettingsPage.Controls.Add(this.SimulationNameButton);
@@ -110,9 +109,9 @@
             this.SettingsPage.Location = new System.Drawing.Point(4, 22);
             this.SettingsPage.Name = "SettingsPage";
             this.SettingsPage.Padding = new System.Windows.Forms.Padding(3);
-            this.SettingsPage.Size = new System.Drawing.Size(1002, 536);
+            this.SettingsPage.Size = new System.Drawing.Size(1152, 536);
             this.SettingsPage.TabIndex = 0;
-            this.SettingsPage.Text = "Settings";
+            this.SettingsPage.Text = "Simulation settings";
             this.SettingsPage.UseVisualStyleBackColor = true;
             // 
             // ModelsStateTable
@@ -136,7 +135,7 @@
             this.ModelPreparationProcessColumn,
             this.ModelSimulationProcessColumn,
             this.ModelCollectingResultsColumn});
-            this.ModelsStateTable.Location = new System.Drawing.Point(12, 226);
+            this.ModelsStateTable.Location = new System.Drawing.Point(270, 226);
             this.ModelsStateTable.Name = "ModelsStateTable";
             this.ModelsStateTable.ReadOnly = true;
             this.ModelsStateTable.RowHeadersVisible = false;
@@ -205,7 +204,7 @@
             this.PreparationProcessColumn,
             this.SimulationProcessColumn,
             this.CollectingResultsProcessColumn});
-            this.SimulationStateTable.Location = new System.Drawing.Point(12, 74);
+            this.SimulationStateTable.Location = new System.Drawing.Point(270, 83);
             this.SimulationStateTable.Name = "SimulationStateTable";
             this.SimulationStateTable.ReadOnly = true;
             this.SimulationStateTable.RowHeadersVisible = false;
@@ -256,7 +255,7 @@
             // 
             // SimulationNameTextBox
             // 
-            this.SimulationNameTextBox.Location = new System.Drawing.Point(210, 8);
+            this.SimulationNameTextBox.Location = new System.Drawing.Point(468, 8);
             this.SimulationNameTextBox.Name = "SimulationNameTextBox";
             this.SimulationNameTextBox.Size = new System.Drawing.Size(200, 20);
             this.SimulationNameTextBox.TabIndex = 12;
@@ -264,7 +263,7 @@
             // DeleteModelButton
             // 
             this.DeleteModelButton.Enabled = false;
-            this.DeleteModelButton.Location = new System.Drawing.Point(474, 505);
+            this.DeleteModelButton.Location = new System.Drawing.Point(723, 505);
             this.DeleteModelButton.Name = "DeleteModelButton";
             this.DeleteModelButton.Size = new System.Drawing.Size(150, 25);
             this.DeleteModelButton.TabIndex = 11;
@@ -275,47 +274,29 @@
             // StopModelButton
             // 
             this.StopModelButton.Enabled = false;
-            this.StopModelButton.Location = new System.Drawing.Point(318, 505);
+            this.StopModelButton.Location = new System.Drawing.Point(494, 505);
             this.StopModelButton.Name = "StopModelButton";
             this.StopModelButton.Size = new System.Drawing.Size(150, 25);
             this.StopModelButton.TabIndex = 10;
             this.StopModelButton.Text = "Stop model(s) simulation";
             this.StopModelButton.UseVisualStyleBackColor = true;
-            // 
-            // PauseModelButton
-            // 
-            this.PauseModelButton.Enabled = false;
-            this.PauseModelButton.Location = new System.Drawing.Point(162, 505);
-            this.PauseModelButton.Name = "PauseModelButton";
-            this.PauseModelButton.Size = new System.Drawing.Size(150, 25);
-            this.PauseModelButton.TabIndex = 9;
-            this.PauseModelButton.Text = "Pause model(s) simulation";
-            this.PauseModelButton.UseVisualStyleBackColor = true;
+            this.StopModelButton.Click += new System.EventHandler(this.StopModelButton_Click);
             // 
             // StopSimulationButton
             // 
             this.StopSimulationButton.Enabled = false;
-            this.StopSimulationButton.Location = new System.Drawing.Point(318, 149);
+            this.StopSimulationButton.Location = new System.Drawing.Point(494, 139);
             this.StopSimulationButton.Name = "StopSimulationButton";
             this.StopSimulationButton.Size = new System.Drawing.Size(150, 25);
             this.StopSimulationButton.TabIndex = 8;
             this.StopSimulationButton.Text = "Stop simulation process";
             this.StopSimulationButton.UseVisualStyleBackColor = true;
-            // 
-            // PauseSimulationButton
-            // 
-            this.PauseSimulationButton.Enabled = false;
-            this.PauseSimulationButton.Location = new System.Drawing.Point(162, 149);
-            this.PauseSimulationButton.Name = "PauseSimulationButton";
-            this.PauseSimulationButton.Size = new System.Drawing.Size(150, 25);
-            this.PauseSimulationButton.TabIndex = 7;
-            this.PauseSimulationButton.Text = "Pause simulation process";
-            this.PauseSimulationButton.UseVisualStyleBackColor = true;
+            this.StopSimulationButton.Click += new System.EventHandler(this.StopSimulationButton_Click);
             // 
             // StartSimulationButton
             // 
             this.StartSimulationButton.Enabled = false;
-            this.StartSimulationButton.Location = new System.Drawing.Point(6, 149);
+            this.StartSimulationButton.Location = new System.Drawing.Point(270, 139);
             this.StartSimulationButton.Name = "StartSimulationButton";
             this.StartSimulationButton.Size = new System.Drawing.Size(150, 25);
             this.StartSimulationButton.TabIndex = 6;
@@ -326,16 +307,17 @@
             // NewSimulationButton
             // 
             this.NewSimulationButton.Enabled = false;
-            this.NewSimulationButton.Location = new System.Drawing.Point(474, 149);
+            this.NewSimulationButton.Location = new System.Drawing.Point(723, 139);
             this.NewSimulationButton.Name = "NewSimulationButton";
             this.NewSimulationButton.Size = new System.Drawing.Size(150, 25);
             this.NewSimulationButton.TabIndex = 5;
             this.NewSimulationButton.Text = "New simulation";
             this.NewSimulationButton.UseVisualStyleBackColor = true;
+            this.NewSimulationButton.Click += new System.EventHandler(this.NewSimulationButton_Click);
             // 
             // SimulationNameButton
             // 
-            this.SimulationNameButton.Location = new System.Drawing.Point(416, 6);
+            this.SimulationNameButton.Location = new System.Drawing.Point(674, 6);
             this.SimulationNameButton.Name = "SimulationNameButton";
             this.SimulationNameButton.Size = new System.Drawing.Size(150, 25);
             this.SimulationNameButton.TabIndex = 4;
@@ -345,7 +327,7 @@
             // 
             // ModelsStateLabel
             // 
-            this.ModelsStateLabel.Location = new System.Drawing.Point(236, 198);
+            this.ModelsStateLabel.Location = new System.Drawing.Point(494, 198);
             this.ModelsStateLabel.Name = "ModelsStateLabel";
             this.ModelsStateLabel.Size = new System.Drawing.Size(150, 25);
             this.ModelsStateLabel.TabIndex = 3;
@@ -354,7 +336,7 @@
             // 
             // SimulationStateLabel
             // 
-            this.SimulationStateLabel.Location = new System.Drawing.Point(236, 46);
+            this.SimulationStateLabel.Location = new System.Drawing.Point(494, 55);
             this.SimulationStateLabel.Name = "SimulationStateLabel";
             this.SimulationStateLabel.Size = new System.Drawing.Size(150, 25);
             this.SimulationStateLabel.TabIndex = 2;
@@ -363,7 +345,7 @@
             // 
             // SimulationNameLabel
             // 
-            this.SimulationNameLabel.Location = new System.Drawing.Point(54, 6);
+            this.SimulationNameLabel.Location = new System.Drawing.Point(312, 6);
             this.SimulationNameLabel.Name = "SimulationNameLabel";
             this.SimulationNameLabel.Size = new System.Drawing.Size(150, 25);
             this.SimulationNameLabel.TabIndex = 1;
@@ -372,7 +354,7 @@
             // 
             // ModelAddButton
             // 
-            this.ModelAddButton.Location = new System.Drawing.Point(6, 505);
+            this.ModelAddButton.Location = new System.Drawing.Point(270, 505);
             this.ModelAddButton.Name = "ModelAddButton";
             this.ModelAddButton.Size = new System.Drawing.Size(150, 25);
             this.ModelAddButton.TabIndex = 0;
@@ -387,14 +369,14 @@
             this.LogsPage.Location = new System.Drawing.Point(4, 22);
             this.LogsPage.Name = "LogsPage";
             this.LogsPage.Padding = new System.Windows.Forms.Padding(3);
-            this.LogsPage.Size = new System.Drawing.Size(1002, 536);
+            this.LogsPage.Size = new System.Drawing.Size(1152, 536);
             this.LogsPage.TabIndex = 1;
-            this.LogsPage.Text = "Logs";
+            this.LogsPage.Text = "Simulation logs";
             this.LogsPage.UseVisualStyleBackColor = true;
             // 
             // LogsButton
             // 
-            this.LogsButton.Location = new System.Drawing.Point(448, 507);
+            this.LogsButton.Location = new System.Drawing.Point(523, 507);
             this.LogsButton.Name = "LogsButton";
             this.LogsButton.Size = new System.Drawing.Size(106, 23);
             this.LogsButton.TabIndex = 6;
@@ -404,18 +386,38 @@
             // 
             // ResultsPage
             // 
+            this.ResultsPage.Controls.Add(this.ExportResultsButton);
+            this.ResultsPage.Controls.Add(this.ModelsResultsPages);
             this.ResultsPage.Location = new System.Drawing.Point(4, 22);
             this.ResultsPage.Name = "ResultsPage";
-            this.ResultsPage.Size = new System.Drawing.Size(1002, 536);
+            this.ResultsPage.Size = new System.Drawing.Size(1152, 536);
             this.ResultsPage.TabIndex = 2;
-            this.ResultsPage.Text = "Results";
+            this.ResultsPage.Text = "Simulation results";
             this.ResultsPage.UseVisualStyleBackColor = true;
+            // 
+            // ExportResultsButton
+            // 
+            this.ExportResultsButton.Location = new System.Drawing.Point(499, 502);
+            this.ExportResultsButton.Name = "ExportResultsButton";
+            this.ExportResultsButton.Size = new System.Drawing.Size(150, 25);
+            this.ExportResultsButton.TabIndex = 1;
+            this.ExportResultsButton.Text = "Export results";
+            this.ExportResultsButton.UseVisualStyleBackColor = true;
+            this.ExportResultsButton.Click += new System.EventHandler(this.ExportResultsButton_Click);
+            // 
+            // ModelsResultsPages
+            // 
+            this.ModelsResultsPages.Location = new System.Drawing.Point(3, 3);
+            this.ModelsResultsPages.Name = "ModelsResultsPages";
+            this.ModelsResultsPages.SelectedIndex = 0;
+            this.ModelsResultsPages.Size = new System.Drawing.Size(1146, 493);
+            this.ModelsResultsPages.TabIndex = 0;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1034, 586);
+            this.ClientSize = new System.Drawing.Size(1184, 586);
             this.Controls.Add(this.Pages);
             this.Name = "MainForm";
             this.Text = "UHLNoCS";
@@ -427,6 +429,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.SimulationStateTable)).EndInit();
             this.LogsPage.ResumeLayout(false);
             this.LogsPage.PerformLayout();
+            this.ResultsPage.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -442,9 +445,7 @@
         private System.Windows.Forms.TextBox SimulationNameTextBox;
         private System.Windows.Forms.Button DeleteModelButton;
         private System.Windows.Forms.Button StopModelButton;
-        private System.Windows.Forms.Button PauseModelButton;
         private System.Windows.Forms.Button StopSimulationButton;
-        private System.Windows.Forms.Button PauseSimulationButton;
         private System.Windows.Forms.Button StartSimulationButton;
         private System.Windows.Forms.Button NewSimulationButton;
         private System.Windows.Forms.Button SimulationNameButton;
@@ -461,6 +462,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn PreparationProcessColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn SimulationProcessColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn CollectingResultsProcessColumn;
+        private System.Windows.Forms.Button ExportResultsButton;
+        private System.Windows.Forms.TabControl ModelsResultsPages;
     }
 }
 
