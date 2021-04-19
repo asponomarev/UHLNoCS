@@ -17,9 +17,7 @@ using UHLNoCS.Topologies;
 namespace UHLNoCS
 {
     public partial class MainForm : Form
-    {
-        public static string SimulationFolderName = "simulations";
-
+    {               
         private Controller SimulationController;
 
         public MainForm()
