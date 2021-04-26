@@ -11,5 +11,11 @@ namespace UHLNoCS.Algorithms
         public static string Dijkstra = "Dijkstra";
         public static string PO = "PO";
         public static string ROU = "ROU";
+        public static string GreedyPromotion = "GP";
+        public static string MeshYX = "YX";
+
+        public static string[] MeshAlgotithms = new string[] { MeshYX, GreedyPromotion };
+        public static string[] TorusAlgorithms = new string[] { "Default" };
+        public static string[] CirculantAlgorithms = new string[] { Dijkstra, PO, ROU };
     }
 }

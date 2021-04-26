@@ -184,7 +184,7 @@ namespace UHLNoCS.Models
             {
                 Mesh NewMesh = new Mesh(Int32.Parse(TopologyArguments[0]), Int32.Parse(TopologyArguments[1]));
                 NewMesh.CreateNetlist();
-                NewMesh.CreateRouting();
+                NewMesh.CreateRouting(Algorithm);
 
                 TopologyNetlist = Common.MatrixToString(NewMesh.GetNetlist());
                 TopologyRouting = Common.MatrixToString(NewMesh.GetRouting());
