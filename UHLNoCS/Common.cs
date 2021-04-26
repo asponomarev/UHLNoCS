@@ -100,6 +100,18 @@ namespace UHLNoCS
             return Value;
         }
 
+        public static bool Compare(int[] Arr1, int[] Arr2)
+        {
+            for (int Index = 0; Index < Arr1.Length; Index++)
+            {
+                if (Arr1[Index] != Arr2[Index])
+                    return false;
+            }
+            return true;
+        }
+
+        
+
     }
 
 }
