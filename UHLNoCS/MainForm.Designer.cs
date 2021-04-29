@@ -61,6 +61,7 @@
             this.ResultsPage = new System.Windows.Forms.TabPage();
             this.ExportResultsButton = new System.Windows.Forms.Button();
             this.ModelsResultsPages = new System.Windows.Forms.TabControl();
+            this.TablesGraphsButton = new System.Windows.Forms.Button();
             this.Pages.SuspendLayout();
             this.SettingsPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModelsStateTable)).BeginInit();
@@ -386,6 +387,7 @@
             // 
             // ResultsPage
             // 
+            this.ResultsPage.Controls.Add(this.TablesGraphsButton);
             this.ResultsPage.Controls.Add(this.ExportResultsButton);
             this.ResultsPage.Controls.Add(this.ModelsResultsPages);
             this.ResultsPage.Location = new System.Drawing.Point(4, 22);
@@ -397,7 +399,7 @@
             // 
             // ExportResultsButton
             // 
-            this.ExportResultsButton.Location = new System.Drawing.Point(499, 502);
+            this.ExportResultsButton.Location = new System.Drawing.Point(369, 502);
             this.ExportResultsButton.Name = "ExportResultsButton";
             this.ExportResultsButton.Size = new System.Drawing.Size(150, 25);
             this.ExportResultsButton.TabIndex = 1;
@@ -412,6 +414,16 @@
             this.ModelsResultsPages.SelectedIndex = 0;
             this.ModelsResultsPages.Size = new System.Drawing.Size(1146, 493);
             this.ModelsResultsPages.TabIndex = 0;
+            // 
+            // TablesGraphsButton
+            // 
+            this.TablesGraphsButton.Location = new System.Drawing.Point(609, 503);
+            this.TablesGraphsButton.Name = "TablesGraphsButton";
+            this.TablesGraphsButton.Size = new System.Drawing.Size(150, 25);
+            this.TablesGraphsButton.TabIndex = 2;
+            this.TablesGraphsButton.Text = "Show graphs";
+            this.TablesGraphsButton.UseVisualStyleBackColor = true;
+            this.TablesGraphsButton.Click += new System.EventHandler(this.TablesGraphsButton_Click);
             // 
             // MainForm
             // 
@@ -464,6 +476,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn CollectingResultsProcessColumn;
         private System.Windows.Forms.Button ExportResultsButton;
         private System.Windows.Forms.TabControl ModelsResultsPages;
+        private System.Windows.Forms.Button TablesGraphsButton;
     }
 }
 
