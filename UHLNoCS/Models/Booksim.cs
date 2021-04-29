@@ -12,6 +12,9 @@ namespace UHLNoCS.Models
         public static string DefaultConfigFileName = "config";
         public static string DefaultResultFileName = "result.txt";
 
+        public static string BeforeSectionHeader = "Time taken is";
+        public static string SectionHeader = "Overall Traffic Statistics";
+
         public static string[] Topologies = new string[] { "fly", "mesh", "single", "torus", "cmesh", "flatfly", "fattree", "quadtree" };
         public static int DefaultTopologyIndex = 1;
         public static string DefaultTopologyArguments = "2 2";
@@ -24,7 +27,7 @@ namespace UHLNoCS.Models
         public static string DefaultPacketSize = "10";
         public static string DefaultSimulationPeriodLength = "1000";
         public static string DefaultWarmUpPeriodsAmount = "1";
-        public static string DefaultMaxPeriodsAmount = "10";
+        public static string DefaultMaxPeriodsAmount = "5";
         public static string DefaultInjectionRate = "0.1";
         public static string[] SimulationTypes = new string[] { "latency", "throughput" };
         public static int DefaultSimulationType = 0;
@@ -174,6 +177,9 @@ namespace UHLNoCS.Models
             ConfigInfo += "warmup_periods = " + WarmUpPeriodsAmount + ";\r\n";
             ConfigInfo += "max_samples = " + MaxPeriodsAmount + ";\r\n";
 
+            Random SeedGenerator = new Random();
+            ConfigInfo += "seed = " + SeedGenerator.Next(0, 1000000).ToString() + ";\r\n";
+
             File.WriteAllText(ConfigFilePath, ConfigInfo);
         }
 
@@ -215,7 +221,6 @@ namespace UHLNoCS.Models
             int HopsAverageIndex = 10;
 
             int SectionsAmount = 0;
-            string SectionHeader = "Overall Traffic Statistics";
 
             string[] ResultSections = File.ReadAllLines(ResultsDirectoryPath + "\\" + DefaultResultFileName);
             foreach (string ResultString in ResultSections)

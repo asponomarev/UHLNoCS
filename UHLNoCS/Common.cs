@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -110,7 +111,17 @@ namespace UHLNoCS
             return true;
         }
 
-        
+        public static double[] StringToDouble(string[] Values)
+        {
+            double[] Result = new double[Values.Length];
+
+            for (int Index = 0; Index < Values.Length; Index++)
+            {
+                Result[Index] = Double.Parse(Values[Index], CultureInfo.InvariantCulture);
+            }
+
+            return Result;
+        }
 
     }
 
