@@ -37,8 +37,11 @@ namespace UHLNoCS
         }
 
         private void MainForm_Load(object sender, EventArgs e)
-        {
-
+        {/*
+            это был тест GP на mesh 8 8
+            Mesh NewMesh = new Mesh(8, 8);
+            NewMesh.CreateNetlist();
+            NewMesh.CreateRouting(AlgorithmsTypes.GreedyPromotion);*/
         }
 
     }

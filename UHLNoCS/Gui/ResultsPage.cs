@@ -45,10 +45,7 @@ namespace UHLNoCS
                     RowData[ColIndex] = ModelResults[RowIndex, ColIndex];
                 }
                 Table.Rows.Add(RowData);
-            }
-
-            
-            
+            }                  
             
             if (SimulationController.Models[ModelIndex].GetType() == ModelsTypes.UOCNS)
             {
