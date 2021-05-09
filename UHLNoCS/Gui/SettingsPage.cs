@@ -158,6 +158,15 @@ namespace UHLNoCS
                     TextBox ConfigPathTextBox = (TextBox)Pages.Controls.Find(BooksimConfigFilePathTextBoxName + ModelName, true)[0];
                     ConfigPathTextBox.Text = ConfigPathTextBox.Text.Replace(OldSimulationName, NewSimulationName);
                 }
+                else if (ConnectedModel.GetType() == ModelsTypes.Newxim)
+                {
+                    string OldConfigPath = ((Newxim)ConnectedModel).GetConfigFilePath();
+                    string NewConfigPath = OldConfigPath.Replace(OldSimulationName, NewSimulationName);
+                    ((Newxim)ConnectedModel).SetConfigFilePath(NewConfigPath);
+
+                    TextBox ConfigPathTextBox = (TextBox)Pages.Controls.Find(NewximConfigFilePathTextBoxName + ModelName, true)[0];
+                    ConfigPathTextBox.Text = ConfigPathTextBox.Text.Replace(OldSimulationName, NewSimulationName);
+                }
             }
 
             SimulationController.SimulationName = NewSimulationName;

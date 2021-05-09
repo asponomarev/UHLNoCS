@@ -30,7 +30,8 @@ namespace UHLNoCS.Models
         public static string DefaultMaxPeriodsAmount = "5";
         public static string DefaultInjectionRate = "0.1";
         public static string[] SimulationTypes = new string[] { "latency", "throughput" };
-        public static int DefaultSimulationType = 0;
+        public static int DefaultSimulationType = 1;
+        public static string DefaultIterationsAmount = "20";
 
         private bool ConfigGenerationRequired;
         private string ConfigFilePath;
@@ -51,12 +52,13 @@ namespace UHLNoCS.Models
         private string MaxPeriodsAmount;
         private string SimulationType;
         private string InjectionRate;
+        private string IterationsAmount;
 
         public Booksim(string NewType, string NewName, string NewExecutableFilePath, string NewResultsDirectoryPath,
                        bool NewConfigGenerationRequired, string NewConfigFilePath, string NewTopology, string[] NewTopologyArguments,
                        string NewRoutingFunction, string NewVirtualChannelsAmount, string NewVirtualChannelsBufferSize,
                        string NewTrafficType, string NewPacketSize, string NewSimulationPeriodLength, string NewWarmUpPeriodsAmount,
-                       string NewMaxPeriodsAmount, string NewSimulationType, string NewInjectionRate)
+                       string NewMaxPeriodsAmount, string NewSimulationType, string NewInjectionRate, string NewIterationsAmount)
                       : base(NewType, NewName, NewExecutableFilePath, NewResultsDirectoryPath)
         {
             Type = NewType;
@@ -87,6 +89,7 @@ namespace UHLNoCS.Models
             MaxPeriodsAmount = NewMaxPeriodsAmount;
             SimulationType = NewSimulationType;
             InjectionRate = NewInjectionRate;
+            IterationsAmount = NewIterationsAmount;
         }
 
         public void SetConfigGenerationRequired (bool NewConfigGenerationRequired) { ConfigGenerationRequired = NewConfigGenerationRequired; }
@@ -138,6 +141,9 @@ namespace UHLNoCS.Models
         public void SetInjectionRate(string NewInjectionRate) { InjectionRate = NewInjectionRate; }
         public string GetInjectionRate() { return InjectionRate; }
 
+        public void SetIterationsAmount(string NewIterationsAmount) { IterationsAmount = NewIterationsAmount; }
+        public string GetIterationsAmount() { return IterationsAmount; }
+
         public void PrepareForSimulation()
         {
             if (ConfigGenerationRequired)
@@ -172,6 +178,7 @@ namespace UHLNoCS.Models
 
             ConfigInfo += "\r\n// Simulation\r\n";
             ConfigInfo += "sim_type = " + SimulationType + ";\r\n";
+            ConfigInfo += "injection_rate_uses_flits = 1;\r\n";
             ConfigInfo += "injection_rate = " + InjectionRate + ";\r\n";
             ConfigInfo += "sample_period = " + SimulationPeriodLength + ";\r\n";
             ConfigInfo += "warmup_periods = " + WarmUpPeriodsAmount + ";\r\n";

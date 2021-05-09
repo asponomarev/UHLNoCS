@@ -94,11 +94,11 @@ namespace UHLNoCS.Topologies
             SetNetlist(NewNetlist);
         }
 
-        public void CreateRouting(int[,] AdjacencyMatrix, int[,] Netlist)
+        public void CreateRouting(int[,] AdjacencyMatrix, int[,] Netlist, string Algorithm, string[] AlgorithmArguments)
         {
             int[,] Routing = new int[K, K];
 
-            if (MainForm.CurrentAlgorithm == Common.AlgorithmDijkstra)
+            if (Algorithm == AlgorithmsTypes.Dijkstra)
             {
                 for (int Vertex = 0; Vertex < K; Vertex++)
                 {
@@ -125,16 +125,23 @@ namespace UHLNoCS.Topologies
             }
             else
             {
-                if (MainForm.CurrentAlgorithm == Common.AlgorithmPO)
+                if (Algorithm == AlgorithmsTypes.PO)
                 {
                     Routing = PO.CreateRouting(Netlist, K, S1, S2);
                 }
                 else
                 {
-                    if (MainForm.CurrentAlgorithm == Common.AlgorithmROU)
+                    if (Algorithm == AlgorithmsTypes.ROU)
                     {
-                        int Iters = Int32.Parse(MainForm.CurrentAlgorithmArgument);
+                        int Iters = Int32.Parse(AlgorithmArguments[0]);
                         Routing = ROU.CreateRouting(Netlist, K, Iters, S1, S2);
+                    }
+                    else
+                    {
+                        if (Algorithm == AlgorithmsTypes.GreedyPromotion)
+                        {
+                            Routing = GreedyPromotion.CreateRouting(K, S1, S2, Netlist);
+                        }
                     }
                 }
             }

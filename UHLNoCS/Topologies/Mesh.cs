@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UHLNoCS.Algorithms;
 
 namespace UHLNoCS.Topologies
 {
@@ -156,46 +157,56 @@ namespace UHLNoCS.Topologies
         }
 
         // method for creating routing
-        public void CreateRouting()
+        public void CreateRouting(string Algorithm)
         {
             int[,] NewRouting = new int[Vertices, Vertices];
-            int CurrentRow, TargetRow;
-            for (int Row = 0; Row < Vertices; Row++)
+
+            if (Algorithm == AlgorithmsTypes.MeshYX)
             {
-                for (int Col = 0; Col < Vertices; Col++)
+                int CurrentRow, TargetRow;
+                for (int Row = 0; Row < Vertices; Row++)
                 {
-                    CurrentRow = Row / M;
-                    TargetRow = Col / M;
-                    if (Row < Col)
+                    for (int Col = 0; Col < Vertices; Col++)
                     {
-                        if (CurrentRow < TargetRow)
+                        CurrentRow = Row / M;
+                        TargetRow = Col / M;
+                        if (Row < Col)
                         {
-                            NewRouting[Row, Col] = 1;
+                            if (CurrentRow < TargetRow)
+                            {
+                                NewRouting[Row, Col] = 1;
+                            }
+                            else
+                            {
+                                NewRouting[Row, Col] = 2;
+                            }
+                        }
+                        else if (Row > Col)
+                        {
+                            if (CurrentRow > TargetRow)
+                            {
+                                NewRouting[Row, Col] = 3;
+                            }
+                            else
+                            {
+                                NewRouting[Row, Col] = 0;
+                            }
                         }
                         else
                         {
-                            NewRouting[Row, Col] = 2;
+                            NewRouting[Row, Col] = 4;
                         }
-                    }
-                    else if (Row > Col)
-                    {
-                        if (CurrentRow > TargetRow)
-                        {
-                            NewRouting[Row, Col] = 3;
-                        }
-                        else
-                        {
-                            NewRouting[Row, Col] = 0;
-                        }
-                    }
-                    else
-                    {
-                        NewRouting[Row, Col] = 4;
                     }
                 }
             }
+            else if (Algorithm == AlgorithmsTypes.GreedyPromotion)
+            {
+                NewRouting = GreedyPromotion.CreateRouting(N, M, Netlist);
+            }
+
 
             SetRouting(NewRouting);
         }
+
     }
 }

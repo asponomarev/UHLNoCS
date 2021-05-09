@@ -105,6 +105,11 @@ namespace UHLNoCS
                     Booksim BookSim = (Booksim)ThreadModel;
                     BookSim.PrepareForSimulation();
                 }
+                else if (ThreadModel.GetType() == ModelsTypes.Newxim)
+                {
+                    Newxim NewXim = (Newxim)ThreadModel;
+                    NewXim.PrepareForSimulation();
+                }
 
                 PreparationResult = State.Completed;
             }
@@ -169,38 +174,22 @@ namespace UHLNoCS
 
                         ToLogsTextBox("Model " + ModelName + " simulation process started");
 
-                        string OldInjectionRate = BookSim.GetInjectionRate();
-                        string OldSamplePeriod = BookSim.GetSimulationPeriodLength();
-
-                        string OldMaxSamples = BookSim.GetMaxPeriodsAmount();
-                        string OldSimulationType = BookSim.GetSimulationType();
-
-                        int Iteration = 0;
-                        int IterationExitCode = 255;
-
-                        ((Booksim)SimulationController.Models[ModelIndex]).SetSimulationType(Booksim.SimulationTypes[1]);
-                        ((Booksim)SimulationController.Models[ModelIndex]).SetMaxPeriodsAmount(Booksim.DefaultMaxPeriodsAmount);
-
-                        while (Iteration < Optimization.BooksimInjectionRates.Length && IterationExitCode == 255)
+                        int IterationsAmount = int.Parse(BookSim.GetIterationsAmount());
+                        string StartInjectionRate = BookSim.GetInjectionRate();
+                        for (int IterationNumber = 0; IterationNumber < IterationsAmount; IterationNumber++)
                         {
-                            string InjectionRate = Optimization.BooksimNextInjectionRate(Iteration);
-                            string SamplePeriod = Optimization.BooksimNextSamplePeriod(Iteration);
-
-                            ((Booksim)SimulationController.Models[ModelIndex]).SetInjectionRate(InjectionRate);
-                            ((Booksim)SimulationController.Models[ModelIndex]).SetSimulationPeriodLength(SamplePeriod);
-
+                            string IterationInjectionRate = Optimization.ConstantStep(IterationNumber, StartInjectionRate);
+                            ((Booksim)SimulationController.Models[ModelIndex]).SetInjectionRate(IterationInjectionRate);
                             ((Booksim)SimulationController.Models[ModelIndex]).PrepareForSimulation();
 
                             SimulationController.ModelsProcesses[ModelIndex].Start();
-
                             string IterationResult = SimulationController.ModelsProcesses[ModelIndex].StandardOutput.ReadToEnd();
+
                             SimulationController.ModelsProcesses[ModelIndex].WaitForExit();
+                            ProcessExitCode = SimulationController.ModelsProcesses[ModelIndex].ExitCode;
+                            IterationResult += "\r\nExit code: " + ProcessExitCode.ToString() + "\r\n";
 
-                            IterationExitCode = SimulationController.ModelsProcesses[ModelIndex].ExitCode;
-                            IterationResult = IterationResult.Substring(IterationResult.IndexOf(Booksim.BeforeSectionHeader));
-                            IterationResult += "\r\nExit code " + IterationExitCode.ToString() + "\r\n";
-
-                            if (Iteration == 0)
+                            if (IterationNumber == 0)
                             {
                                 File.WriteAllText(BookSim.GetResultsDirectoryPath() + "\\" + Booksim.DefaultResultFileName, IterationResult);
                             }
@@ -208,19 +197,55 @@ namespace UHLNoCS
                             {
                                 File.AppendAllText(BookSim.GetResultsDirectoryPath() + "\\" + Booksim.DefaultResultFileName, IterationResult);
                             }
-
-                            Iteration++;
                         }
 
-                        ((Booksim)SimulationController.Models[ModelIndex]).SetSimulationType(OldSimulationType);
-                        ((Booksim)SimulationController.Models[ModelIndex]).SetInjectionRate(OldInjectionRate);
-
-                        ((Booksim)SimulationController.Models[ModelIndex]).SetMaxPeriodsAmount(OldMaxSamples);
-                        ((Booksim)SimulationController.Models[ModelIndex]).SetSimulationPeriodLength(OldSamplePeriod);
-
-                        ProcessExitCode = IterationExitCode;
+                        ((Booksim)SimulationController.Models[ModelIndex]).SetInjectionRate(StartInjectionRate);
 
                         ToLogsTextBox("Model " + ModelName + " simulation process finished with exit code " + ProcessExitCode.ToString());
+
+                        SimulationController.ModelsProcesses[ModelIndex].Close();
+                    }
+                    else if (ThreadModel.GetType() == ModelsTypes.Newxim)
+                    {
+                        Newxim NewXim = (Newxim)ThreadModel;
+                        SimulationController.ModelsProcesses[ModelIndex].StartInfo.FileName = NewXim.GetExecutableFilePath();
+                        SimulationController.ModelsProcesses[ModelIndex].StartInfo.Arguments = "-config " + NewXim.GetConfigFilePath();
+                        SimulationController.ModelsProcesses[ModelIndex].StartInfo.UseShellExecute = false;
+                        SimulationController.ModelsProcesses[ModelIndex].StartInfo.RedirectStandardOutput = true;
+                        SimulationController.ModelsProcesses[ModelIndex].StartInfo.CreateNoWindow = true;
+
+                        // SIMULATION PROCESS BEGIN
+                        ToLogsTextBox("Model " + ModelName + " simulation process started");
+
+                        int IterationsAmount = int.Parse(NewXim.GetIterationsAmount());
+                        string StartInjectionRate = NewXim.GetPacketInjectionRate();
+                        for (int IterationNumber = 0; IterationNumber < IterationsAmount; IterationNumber++)
+                        {
+                            string IterationInjectionRate = Optimization.ConstantStep(IterationNumber, StartInjectionRate);
+                            ((Newxim)SimulationController.Models[ModelIndex]).SetPacketInjectionRate(IterationInjectionRate);
+                            ((Newxim)SimulationController.Models[ModelIndex]).PrepareForSimulation();
+
+                            SimulationController.ModelsProcesses[ModelIndex].Start();
+                            string IterationResult = SimulationController.ModelsProcesses[ModelIndex].StandardOutput.ReadToEnd();
+
+                            SimulationController.ModelsProcesses[ModelIndex].WaitForExit();
+                            ProcessExitCode = SimulationController.ModelsProcesses[ModelIndex].ExitCode;
+                            IterationResult += "\r\nExit code: " + ProcessExitCode.ToString() + "\r\n";
+
+                            if (IterationNumber == 0)
+                            {
+                                File.WriteAllText(NewXim.GetResultsDirectoryPath() + "\\" + Newxim.DefaultResultFileName, IterationResult);
+                            }
+                            else
+                            {
+                                File.AppendAllText(NewXim.GetResultsDirectoryPath() + "\\" + Newxim.DefaultResultFileName, IterationResult);
+                            }
+                        }
+
+                        ((Newxim)SimulationController.Models[ModelIndex]).SetPacketInjectionRate(StartInjectionRate);
+
+                        ToLogsTextBox("Model " + ModelName + " simulation process finished with exit code " + ProcessExitCode.ToString());
+                        // SIMULATION PROCESS END
 
                         SimulationController.ModelsProcesses[ModelIndex].Close();
                     }
@@ -231,9 +256,8 @@ namespace UHLNoCS
                     ToLogsTextBox("Model " + ModelName + " simulation finished with error: " + SimulationException.Message + SimulationException.StackTrace);
                 }
 
-                if (ExceptionThrown || (ThreadModel.GetType() == ModelsTypes.UOCNS && ProcessExitCode != 0) || (ThreadModel.GetType() == ModelsTypes.Booksim && ProcessExitCode != 255))
+                if (ExceptionThrown || (ThreadModel.GetType() == ModelsTypes.UOCNS && ProcessExitCode != 0) || (ThreadModel.GetType() == ModelsTypes.Booksim && ProcessExitCode != 255) || (ThreadModel.GetType() == ModelsTypes.Newxim && ProcessExitCode != 0) )
                 {
-                    ToLogsTextBox("\r\nHere " + ProcessExitCode.ToString() + "\r\n");
                     SimulationController.ModelsStates[ModelIndex][2] = State.Error;
                     SimulationController.ModelsStates[ModelIndex][3] = State.Stopped;
                     Invoke(new Action(() => { UpdateSimulationState(); }));
@@ -265,6 +289,12 @@ namespace UHLNoCS
                         {
                             Booksim BookSim = (Booksim)ThreadModel;
                             string[,] Result = BookSim.CollectSimulationResults();
+                            Invoke(new Action(() => { FillResultsTables(ModelIndex, Result); }));
+                        }
+                        else if (ThreadModel.GetType() == ModelsTypes.Newxim)
+                        {
+                            Newxim NewXim = (Newxim)ThreadModel;
+                            string[,] Result = NewXim.CollectSimulationResults();
                             Invoke(new Action(() => { FillResultsTables(ModelIndex, Result); }));
                         }
 

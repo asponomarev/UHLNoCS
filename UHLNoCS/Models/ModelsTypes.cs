@@ -10,7 +10,8 @@ namespace UHLNoCS.Models
     {
         public static string UOCNS = "UOCNS";
         public static string Booksim = "BookSim";
+        public static string Newxim = "NewXim";
 
-        public static string[] All = new string[] { UOCNS, Booksim };
+        public static string[] All = new string[] { UOCNS, Booksim, Newxim };
     }
 }

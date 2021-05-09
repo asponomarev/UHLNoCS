@@ -16,6 +16,6 @@ namespace UHLNoCS.Algorithms
 
         public static string[] MeshAlgotithms = new string[] { MeshYX, GreedyPromotion };
         public static string[] TorusAlgorithms = new string[] { "Default" };
-        public static string[] CirculantAlgorithms = new string[] { Dijkstra, PO, ROU };
+        public static string[] CirculantAlgorithms = new string[] { Dijkstra, PO, ROU, GreedyPromotion };
     }
 }

@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,8 +52,14 @@
     <Compile Include="Algorithms\GreedyPromotion.cs" />
     <Compile Include="Algorithms\PO.cs" />
     <Compile Include="Algorithms\ROU.cs" />
+    <Compile Include="Gui\BooksimResultTable.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Gui\BooksimResultTable.Designer.cs">
+      <DependentUpon>BooksimResultTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Common.cs" />
-    <Compile Include="LogsPage.cs">
+    <Compile Include="Gui\LogsPage.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.cs">
@@ -61,24 +68,33 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ModelResultsTable.cs">
+    <Compile Include="Gui\ModelResultsTable.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ModelResultsTable.Designer.cs">
+    <Compile Include="Gui\ModelResultsTable.Designer.cs">
       <DependentUpon>ModelResultsTable.cs</DependentUpon>
     </Compile>
-    <Compile Include="ModelsPages.cs">
+    <Compile Include="Gui\ModelsPages.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Models\Booksim.cs" />
     <Compile Include="Models\Model.cs" />
     <Compile Include="Models\ModelsTypes.cs" />
+    <Compile Include="Models\Newxim.cs" />
     <Compile Include="Models\UOCNS.cs" />
-    <Compile Include="ResultsPage.cs">
+    <Compile Include="Gui\ResultsPage.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SettingsPage.cs">
+    <Compile Include="Gui\SettingsPage.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Gui\NewximResultTable.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Gui\NewximResultTable.Designer.cs">
+      <DependentUpon>NewximResultTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Simulation\Optimization.cs" />
     <Compile Include="Simulation\SimulationLogic.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,10 +107,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Topologies\TopologiesTypes.cs" />
     <Compile Include="Topologies\Torus.cs" />
+    <EmbeddedResource Include="Gui\BooksimResultTable.resx">
+      <DependentUpon>BooksimResultTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\NewximResultTable.resx">
+      <DependentUpon>NewximResultTable.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ModelResultsTable.resx">
+    <EmbeddedResource Include="Gui\ModelResultsTable.resx">
       <DependentUpon>ModelResultsTable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

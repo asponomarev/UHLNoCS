@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using UHLNoCS.Models;
 using UHLNoCS.Simulation;
+using UHLNoCS.Topologies;
 
 namespace UHLNoCS
 {
@@ -49,7 +51,7 @@ namespace UHLNoCS
             
             if (SimulationController.Models[ModelIndex].GetType() == ModelsTypes.UOCNS)
             {
-                int UocnsXCol = 7;
+                int UocnsXCol = 6;
                 int UocnsYCol = 10;
 
                 string[] Xs = new string[Table.RowCount];
@@ -64,39 +66,103 @@ namespace UHLNoCS
                 double[] UocnsGraphX = Common.StringToDouble(Xs);
                 double[] UocnsGraphY = Common.StringToDouble(Ys);
 
+                string Topology = ((UOCNS)SimulationController.Models[ModelIndex]).GetTopology();
+                int Vertices = 0;
+                if (Topology == TopologiesTypes.Mesh || Topology == TopologiesTypes.Torus)
+                {
+                    int Height = int.Parse(((UOCNS)SimulationController.Models[ModelIndex]).GetTopologyArguments()[0]);
+                    int Width = int.Parse(((UOCNS)SimulationController.Models[ModelIndex]).GetTopologyArguments()[1]);
+                    Vertices = Height * Width;
+                }
+                else if (Topology == TopologiesTypes.Circulant || Topology == TopologiesTypes.OptimalCirculant)
+                {
+                    Vertices = int.Parse(((UOCNS)SimulationController.Models[ModelIndex]).GetTopologyArguments()[0]);
+                }
+
                 for (int Index = 0; Index < UocnsGraphY.Length; Index++)
                 {
-                    Graph.Series[0].Points.AddXY(UocnsGraphY[Index], UocnsGraphY[Index]);
+                    Graph.Series[0].Points.AddXY(UocnsGraphX[Index] * Vertices, UocnsGraphY[Index] * Vertices);
                 }
                 
-                Graph.ChartAreas[0].AxisX.Maximum = Math.Round(UocnsGraphX.Max(), 3);
+                Graph.ChartAreas[0].AxisX.Maximum = Math.Round(UocnsGraphX.Max() * Vertices, 3);
                 Graph.ChartAreas[0].AxisX.Interval = Math.Round(Graph.ChartAreas[0].AxisX.Maximum / 19.0, 3);
                 Graph.ChartAreas[0].AxisX.Maximum += Graph.ChartAreas[0].AxisX.Interval;
 
-                Graph.ChartAreas[0].AxisY.Maximum = Math.Round(UocnsGraphY.Max(), 3);
+                Graph.ChartAreas[0].AxisY.Maximum = Math.Round(UocnsGraphY.Max() * Vertices, 3);
                 Graph.ChartAreas[0].AxisY.Interval = Math.Round(Graph.ChartAreas[0].AxisY.Maximum / 19.0, 3);
                 Graph.ChartAreas[0].AxisY.Maximum += Graph.ChartAreas[0].AxisY.Interval;
             }
             else if (SimulationController.Models[ModelIndex].GetType() == ModelsTypes.Booksim)
             {
-                int BooksimYCol = 5;
+                int IterationsAmount = int.Parse(((Booksim)SimulationController.Models[ModelIndex]).GetIterationsAmount());
+                double StartInjectionRate = double.Parse(((Booksim)SimulationController.Models[ModelIndex]).GetInjectionRate(), CultureInfo.InvariantCulture);
 
-                double[] BooksimGraphX = Common.StringToDouble(Optimization.BooksimInjectionRates);
+                double[] BooksimGraphX = new double[IterationsAmount];
+                for (int Iteration = 0; Iteration < IterationsAmount; Iteration++)
+                {
+                    BooksimGraphX[Iteration] = (Iteration + 1) * StartInjectionRate;
+                }
+
+                string Topology = ((Booksim)SimulationController.Models[ModelIndex]).GetTopology();
+                int Vertices = 1;
+                if (Topology == Booksim.Topologies[1] || Topology == Booksim.Topologies[3])
+                {
+                    int K = int.Parse(((Booksim)SimulationController.Models[ModelIndex]).GetTopologyArguments()[0]);
+                    int N = int.Parse(((Booksim)SimulationController.Models[ModelIndex]).GetTopologyArguments()[1]);
+                    for (int Dim = 0; Dim < N; Dim++)
+                    {
+                        Vertices *= K;
+                    }
+                }
+
+                int BooksimYCol = 7;
                 string[] Ys = new string[Table.RowCount];
-
                 for (int Row = 0; Row < Table.RowCount; Row++)
                 {
                     Ys[Row] = Table.Rows[Row].Cells[BooksimYCol].Value.ToString();
                 }
-
                 double[] BooksimGraphY = Common.StringToDouble(Ys);
 
                 for (int Index = 0; Index < BooksimGraphY.Length; Index++)
                 {
-                    Graph.Series[0].Points.AddXY(BooksimGraphX[Index], BooksimGraphY[Index]);
+                    Graph.Series[0].Points.AddXY(BooksimGraphX[Index] * Vertices, BooksimGraphY[Index] * Vertices);
                 }
 
-                Graph.ChartAreas[0].AxisY.Maximum = Math.Round(BooksimGraphY.Max(), 3);
+                Graph.ChartAreas[0].AxisX.Maximum = Math.Round(BooksimGraphX.Max() * Vertices, 3);
+                Graph.ChartAreas[0].AxisX.Interval = Math.Round(Graph.ChartAreas[0].AxisX.Maximum / 19.0, 3);
+                Graph.ChartAreas[0].AxisX.Maximum += Graph.ChartAreas[0].AxisX.Interval;
+
+                Graph.ChartAreas[0].AxisY.Maximum = Math.Round(BooksimGraphY.Max() * Vertices, 3);
+                Graph.ChartAreas[0].AxisY.Interval = Math.Round(Graph.ChartAreas[0].AxisY.Maximum / 19.0, 3);
+                Graph.ChartAreas[0].AxisY.Maximum += Graph.ChartAreas[0].AxisY.Interval;
+            }
+            if (SimulationController.Models[ModelIndex].GetType() == ModelsTypes.Newxim)
+            {
+                int NewximXCol = 3;
+                int NewximYCol = 5;
+
+                string[] Xs = new string[Table.RowCount];
+                string[] Ys = new string[Table.RowCount];
+
+                for (int Row = 0; Row < Table.RowCount; Row++)
+                {
+                    Xs[Row] = Table.Rows[Row].Cells[NewximXCol].Value.ToString();
+                    Ys[Row] = Table.Rows[Row].Cells[NewximYCol].Value.ToString();
+                }
+
+                double[] NewximGraphX = Common.StringToDouble(Xs);
+                double[] NewximGraphY = Common.StringToDouble(Ys);
+
+                for (int Index = 0; Index < NewximGraphY.Length; Index++)
+                {
+                    Graph.Series[0].Points.AddXY(NewximGraphX[Index], NewximGraphY[Index]);
+                }
+
+                Graph.ChartAreas[0].AxisX.Maximum = Math.Round(NewximGraphX.Max(), 3);
+                Graph.ChartAreas[0].AxisX.Interval = Math.Round(Graph.ChartAreas[0].AxisX.Maximum / 19.0, 3);
+                Graph.ChartAreas[0].AxisX.Maximum += Graph.ChartAreas[0].AxisX.Interval;
+
+                Graph.ChartAreas[0].AxisY.Maximum = Math.Round(NewximGraphY.Max(), 3);
                 Graph.ChartAreas[0].AxisY.Interval = Math.Round(Graph.ChartAreas[0].AxisY.Maximum / 19.0, 3);
                 Graph.ChartAreas[0].AxisY.Maximum += Graph.ChartAreas[0].AxisY.Interval;
             }

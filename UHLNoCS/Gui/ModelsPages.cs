@@ -54,6 +54,22 @@ namespace UHLNoCS
         public static string BooksimMaxPeriodAmountTextBoxName = "BooksimMaxPeriodAmountTextBox_";
         public static string BooksimSimulationTypeComboBoxName = "BooksimSimulationTypeComboBox_";
         public static string BooksimInjectionRateTextBoxName = "BooksimInjectionRateTextBox_";
+        public static string BooksimIterationsAmountTextBoxName = "BooksimIterationsAmountTextBox_";
+
+        public static string NewximConfigGenerationRequiredCheckBoxName = "NewximConfigGenerationRequiredCheckBox_";
+        public static string NewximConfigFilePathTextBoxName = "NewximConfigFilePathTextBox_";
+        public static string NewximTopologyComboBoxName = "NewximTopologyComboBox_";
+        public static string NewximTopologyArgumentsTextBoxName = "NewximTopologyArgumentsTextBox_";
+        public static string NewximAlgorithmComboBoxName = "NewximAlgorithmComboBox_";
+        public static string NewximTopologyChannelsTextBoxName = "NewximTopologyChannelsTextBox_";
+        public static string NewximVirtualChannelsTextBoxName = "NewximVirtualChannelsTextBox_";
+        public static string NewximBufferDepthTextBoxName = "NewximBufferDepthTextBox_";
+        public static string NewximMinPacketSizeTextBoxName = "NewximMinPacketSizeTextBox_";
+        public static string NewximMaxPacketSizeTextBoxName = "NewximMaxPacketSizeTextBox_";
+        public static string NewximPacketInjectionRateTextBoxName = "NewximPacketInjectionRateTextBox_";
+        public static string NewximSimulationTimeTextBoxName = "NewximSimulationTimeTextBox_";
+        public static string NewximWarmUpTimeTextBoxName = "NewximWarmUpTimeTextBox_";
+        public static string NewximIterationsAmountTextBoxName = "NewximIterationsAmountTextBox_";
 
         public static string ModelAddButtonName = "ModelAddButton_";
         public static string ModelSaveButtonName = "ModelSaveButton_";
@@ -519,7 +535,7 @@ namespace UHLNoCS
                         BooksimSimulationComboBox.SelectedIndex = Booksim.DefaultSimulationType;
 
                         Label BooksimInjectionLabel = new Label();
-                        BooksimInjectionLabel.Text = "Injection rate";
+                        BooksimInjectionLabel.Text = "Flits generation rate";
                         BooksimInjectionLabel.TextAlign = ContentAlignment.MiddleCenter;
                         BooksimInjectionLabel.Size = new Size(150, 25);
 
@@ -527,8 +543,18 @@ namespace UHLNoCS
                         BooksimInjectionTextBox.Name = BooksimInjectionRateTextBoxName;
                         BooksimInjectionTextBox.Text = Booksim.DefaultInjectionRate;
                         BooksimInjectionTextBox.Size = new Size(100, 25);
+
+                        Label BooksimIterationsAmountLabel = new Label();
+                        BooksimIterationsAmountLabel.Text = "Simulation iterations amount";
+                        BooksimIterationsAmountLabel.TextAlign = ContentAlignment.MiddleCenter;
+                        BooksimIterationsAmountLabel.Size = new Size(150, 25);
+
+                        TextBox BooksimIterationsAmountTextBox = new TextBox();
+                        BooksimIterationsAmountTextBox.Name = BooksimIterationsAmountTextBoxName;
+                        BooksimIterationsAmountTextBox.Text = Booksim.DefaultIterationsAmount;
+                        BooksimIterationsAmountTextBox.Size = new Size(100, 25);
                     //}
-                    BooksimSimLayoutPanel.Controls.AddRange(new Control[] { BooksimSimulationLabel, BooksimSimulationComboBox, BooksimInjectionLabel, BooksimInjectionTextBox });                  
+                    BooksimSimLayoutPanel.Controls.AddRange(new Control[] { BooksimSimulationLabel, BooksimSimulationComboBox, BooksimInjectionLabel, BooksimInjectionTextBox, BooksimIterationsAmountLabel, BooksimIterationsAmountTextBox });                  
 
                     FlowLayoutPanel ButtonsLayoutPanel = new FlowLayoutPanel();
                     ButtonsLayoutPanel.FlowDirection = FlowDirection.LeftToRight;
@@ -566,6 +592,233 @@ namespace UHLNoCS
                 //}
                 ModelPageLayoutPanel.Controls.AddRange(new Control[] { BooksimConfigFileLayoutPanel, BooksimTopologyLayoutPanel, BooksimFifoLayoutPanel,
                                                                        BooksimTrafficLayoutPanel, BooksimPeriodLayoutPanel, BooksimSimLayoutPanel,
+                                                                       ButtonsLayoutPanel});
+            }
+            else if (ModelType == ModelsTypes.Newxim)
+            {
+                FlowLayoutPanel ModelPageLayoutPanel = (FlowLayoutPanel)Pages.Controls.Find(ModelPageLayoutPanelName, true)[0];
+                //{
+                    FlowLayoutPanel NewximConfigFileLayoutPanel = new FlowLayoutPanel();
+                    NewximConfigFileLayoutPanel.FlowDirection = FlowDirection.LeftToRight;
+                    NewximConfigFileLayoutPanel.AutoSize = true;
+                    NewximConfigFileLayoutPanel.Margin = new Padding(3, 13, 3, 3);
+                    //{
+                        Label NewximConfigFileLabel = new Label();
+                        NewximConfigFileLabel.Text = "Configuration file path";
+                        NewximConfigFileLabel.TextAlign = ContentAlignment.MiddleCenter;
+                        NewximConfigFileLabel.Size = new Size(150, 25);
+
+                        TextBox NewximConfigFileTextBox = new TextBox();
+                        NewximConfigFileTextBox.DoubleClick += ModelExeTextBox_DoubleClick;
+                        NewximConfigFileTextBox.Name = NewximConfigFilePathTextBoxName;
+                        NewximConfigFileTextBox.Text = "Will be set automatically";
+                        NewximConfigFileTextBox.Size = new Size(600, 25);
+                        NewximConfigFileTextBox.ReadOnly = true;
+                        NewximConfigFileTextBox.Enabled = false;
+
+                        CheckBox NewximConfigFileCheckBox = new CheckBox();
+                        NewximConfigFileCheckBox.Name = NewximConfigGenerationRequiredCheckBoxName;
+                        NewximConfigFileCheckBox.Text = "Cofiguration file generation required";
+                        NewximConfigFileCheckBox.Size = new Size(300, 25);
+                        NewximConfigFileCheckBox.Checked = true;
+                        NewximConfigFileCheckBox.CheckedChanged += NewximConfigFileCheckBox_CheckedChanged;// todo:implement
+                    //}
+                    NewximConfigFileLayoutPanel.Controls.AddRange(new Control[] { NewximConfigFileLabel, NewximConfigFileTextBox, NewximConfigFileCheckBox });
+
+                    FlowLayoutPanel NewximTopologyLayoutPanel = new FlowLayoutPanel();
+                    NewximTopologyLayoutPanel.FlowDirection = FlowDirection.LeftToRight;
+                    NewximTopologyLayoutPanel.AutoSize = true;
+                    //{
+                        Label NewximTopologyLabel = new Label();
+                        NewximTopologyLabel.Text = "NoC topology";
+                        NewximTopologyLabel.TextAlign = ContentAlignment.MiddleCenter;
+                        NewximTopologyLabel.Size = new Size(150, 25);
+
+                        ComboBox NewximTopologyComboBox = new ComboBox();
+                        NewximTopologyComboBox.Name = NewximTopologyComboBoxName;
+                        NewximTopologyComboBox.Size = new Size(100, 25);
+                        NewximTopologyComboBox.Items.AddRange(Newxim.Topologies);
+                        NewximTopologyComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+                        NewximTopologyComboBox.SelectedIndex = Newxim.DefaultTopology;
+
+                        Label NewximTopologyArgsLabel = new Label();
+                        NewximTopologyArgsLabel.Text = "Topology arguments";
+                        NewximTopologyArgsLabel.TextAlign = ContentAlignment.MiddleCenter;
+                        NewximTopologyArgsLabel.Size = new Size(150, 25);
+
+                        TextBox NewximTopologyArgsTextBox = new TextBox();
+                        NewximTopologyArgsTextBox.Name = NewximTopologyArgumentsTextBoxName;
+                        NewximTopologyArgsTextBox.Text = Newxim.DefaultTopologyArguments;
+                        NewximTopologyArgsTextBox.Size = new Size(100, 25);
+
+                        Label NewximAlgorithmLabel = new Label();
+                        NewximAlgorithmLabel.Text = "Routing algorithm";
+                        NewximAlgorithmLabel.TextAlign = ContentAlignment.MiddleCenter;
+                        NewximAlgorithmLabel.Size = new Size(150, 25);
+
+                        ComboBox NewximAlgorithmComboBox = new ComboBox();
+                        NewximAlgorithmComboBox.Name = NewximAlgorithmComboBoxName;
+                        NewximAlgorithmComboBox.Size = new Size(100, 25);
+                        NewximAlgorithmComboBox.Items.AddRange(Newxim.RoutingAlgorithms);
+                        NewximAlgorithmComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+                        NewximAlgorithmComboBox.SelectedIndex = Newxim.DefaultRoutingAlgorithm;
+                    //}
+                    NewximTopologyLayoutPanel.Controls.AddRange(new Control[] { NewximTopologyLabel, NewximTopologyComboBox,
+                                                                                 NewximTopologyArgsLabel, NewximTopologyArgsTextBox,
+                                                                                 NewximAlgorithmLabel, NewximAlgorithmComboBox});
+                   
+                    FlowLayoutPanel NewximChannelsLayoutPanel = new FlowLayoutPanel();
+                    NewximChannelsLayoutPanel.FlowDirection = FlowDirection.LeftToRight;
+                    NewximChannelsLayoutPanel.AutoSize = true;
+                    NewximChannelsLayoutPanel.Margin = new Padding(3, 13, 3, 3);
+                    //{
+                        Label NewximTopologyChannelsLabel = new Label();
+                        NewximTopologyChannelsLabel.Text = "Physical channels amount";
+                        NewximTopologyChannelsLabel.TextAlign = ContentAlignment.MiddleCenter;
+                        NewximTopologyChannelsLabel.Size = new Size(150, 25);
+
+                        TextBox NewximTopologyChannelsTextBox = new TextBox();
+                        NewximTopologyChannelsTextBox.Name = NewximTopologyChannelsTextBoxName;
+                        NewximTopologyChannelsTextBox.Text = Newxim.DefaultTopologyChannels;
+                        NewximTopologyChannelsTextBox.Size = new Size(100, 25);
+
+                        Label NewximVirtualChannelsLabel = new Label();
+                        NewximVirtualChannelsLabel.Text = "Virtual channels amount";
+                        NewximVirtualChannelsLabel.TextAlign = ContentAlignment.MiddleCenter;
+                        NewximVirtualChannelsLabel.Size = new Size(150, 25);
+
+                        TextBox NewximVirtualChannelsTextBox = new TextBox();
+                        NewximVirtualChannelsTextBox.Name = NewximVirtualChannelsTextBoxName;
+                        NewximVirtualChannelsTextBox.Text = Newxim.DefaultVirtualChannels;
+                        NewximVirtualChannelsTextBox.Size = new Size(100, 25);
+
+                        Label NewximBufferDepthLabel = new Label();
+                        NewximBufferDepthLabel.Text = "Buffers depth";
+                        NewximBufferDepthLabel.TextAlign = ContentAlignment.MiddleCenter;
+                        NewximBufferDepthLabel.Size = new Size(150, 25);
+
+                        TextBox NewximBufferDepthTextBox = new TextBox();
+                        NewximBufferDepthTextBox.Name = NewximBufferDepthTextBoxName;
+                        NewximBufferDepthTextBox.Text = Newxim.DefaultBufferDepth;
+                        NewximBufferDepthTextBox.Size = new Size(100, 25);
+                    //}
+                    NewximChannelsLayoutPanel.Controls.AddRange(new Control[] { NewximTopologyChannelsLabel, NewximTopologyChannelsTextBox,
+                                                                                NewximVirtualChannelsLabel, NewximVirtualChannelsTextBox,
+                                                                                NewximBufferDepthLabel, NewximBufferDepthTextBox});
+
+                    FlowLayoutPanel NewximPacketsLayoutPanel = new FlowLayoutPanel();
+                    NewximPacketsLayoutPanel.FlowDirection = FlowDirection.LeftToRight;
+                    NewximPacketsLayoutPanel.AutoSize = true;
+                    //{
+
+                        Label NewximMinPacketSizeLabel = new Label();
+                        NewximMinPacketSizeLabel.Text = "Min packet size";
+                        NewximMinPacketSizeLabel.TextAlign = ContentAlignment.MiddleCenter;
+                        NewximMinPacketSizeLabel.Size = new Size(150, 25);
+
+                        TextBox NewximMinPacketSizeTextBox = new TextBox();
+                        NewximMinPacketSizeTextBox.Name = NewximMinPacketSizeTextBoxName;
+                        NewximMinPacketSizeTextBox.Text = Newxim.DefaultMinPacketSize;
+                        NewximMinPacketSizeTextBox.Size = new Size(100, 25);
+
+                        Label NewximMaxPacketSizeLabel = new Label();
+                        NewximMaxPacketSizeLabel.Text = "Max packet size";
+                        NewximMaxPacketSizeLabel.TextAlign = ContentAlignment.MiddleCenter;
+                        NewximMaxPacketSizeLabel.Size = new Size(150, 25);
+
+                        TextBox NewximMaxPacketSizeTextBox = new TextBox();
+                        NewximMaxPacketSizeTextBox.Name = NewximMaxPacketSizeTextBoxName;
+                        NewximMaxPacketSizeTextBox.Text = Newxim.DefaultMaxPacketSize;
+                        NewximMaxPacketSizeTextBox.Size = new Size(100, 25);
+
+                        Label NewximInjectionRateLabel = new Label();
+                        NewximInjectionRateLabel.Text = "Flits generation rate";
+                        NewximInjectionRateLabel.TextAlign = ContentAlignment.MiddleCenter;
+                        NewximInjectionRateLabel.Size = new Size(150, 25);
+
+                        TextBox NewximInjectionRateTextBox = new TextBox();
+                        NewximInjectionRateTextBox.Name = NewximPacketInjectionRateTextBoxName;
+                        NewximInjectionRateTextBox.Text = Newxim.DefaultPacketInjectionRate;
+                        NewximInjectionRateTextBox.Size = new Size(100, 25);
+                    //}
+                    NewximPacketsLayoutPanel.Controls.AddRange(new Control[] { NewximMinPacketSizeLabel, NewximMinPacketSizeTextBox,
+                                                                               NewximMaxPacketSizeLabel, NewximMaxPacketSizeTextBox,
+                                                                               NewximInjectionRateLabel, NewximInjectionRateTextBox});
+
+                    FlowLayoutPanel NewximTimesLayoutPanel = new FlowLayoutPanel();
+                    NewximTimesLayoutPanel.FlowDirection = FlowDirection.LeftToRight;
+                    NewximTimesLayoutPanel.AutoSize = true;
+                    //{
+                        Label NewximSimTimeLabel = new Label();
+                        NewximSimTimeLabel.Text = "Simulation cycles amount";
+                        NewximSimTimeLabel.TextAlign = ContentAlignment.MiddleCenter;
+                        NewximSimTimeLabel.Size = new Size(150, 25);
+
+                        TextBox NewximSimTimeTextBox = new TextBox();
+                        NewximSimTimeTextBox.Name = NewximSimulationTimeTextBoxName;
+                        NewximSimTimeTextBox.Text = Newxim.DefaultSimulationTime;
+                        NewximSimTimeTextBox.Size = new Size(100, 25);        
+
+                        Label NewximWarmUpTimeLabel = new Label();
+                        NewximWarmUpTimeLabel.Text = "Warm up cycles amount";
+                        NewximWarmUpTimeLabel.TextAlign = ContentAlignment.MiddleCenter;
+                        NewximWarmUpTimeLabel.Size = new Size(150, 25);
+
+                        TextBox NewximWarmUpTimeTextBox = new TextBox();
+                        NewximWarmUpTimeTextBox.Name = NewximWarmUpTimeTextBoxName;
+                        NewximWarmUpTimeTextBox.Text = Newxim.DefaultWarmUpTime;
+                        NewximWarmUpTimeTextBox.Size = new Size(100, 25);  
+
+                        Label NewximIterationsAmountLabel = new Label();
+                        NewximIterationsAmountLabel.Text = "Simulation iterations amount";
+                        NewximIterationsAmountLabel.TextAlign = ContentAlignment.MiddleCenter;
+                        NewximIterationsAmountLabel.Size = new Size(150, 25);
+
+                        TextBox NewximIterationsAmountTextBox = new TextBox();
+                        NewximIterationsAmountTextBox.Name = NewximIterationsAmountTextBoxName;
+                        NewximIterationsAmountTextBox.Text = Newxim.DefaultIterationsAmount;
+                        NewximIterationsAmountTextBox.Size = new Size(100, 25);
+                    //}
+                    NewximTimesLayoutPanel.Controls.AddRange(new Control[] { NewximSimTimeLabel, NewximSimTimeTextBox,
+                                                                             NewximWarmUpTimeLabel, NewximWarmUpTimeTextBox,
+                                                                             NewximIterationsAmountLabel, NewximIterationsAmountTextBox});
+                    
+                    FlowLayoutPanel ButtonsLayoutPanel = new FlowLayoutPanel();
+                    ButtonsLayoutPanel.FlowDirection = FlowDirection.LeftToRight;
+                    ButtonsLayoutPanel.AutoSize = true;
+                    ButtonsLayoutPanel.Margin = new Padding(3, 13, 3, 3);
+                    //{
+                        Button AddButton = new Button();
+                        AddButton.Name = ModelAddButtonName;
+                        AddButton.Text = "Add";
+                        AddButton.Size = new Size(150, 25);
+                        AddButton.Click += AddButton_Click;
+
+                        Button CurrentButton = new Button();
+                        CurrentButton.Name = ModelCurrentButtonName;
+                        CurrentButton.Text = "Current";
+                        CurrentButton.Size = new Size(150, 25);
+                        CurrentButton.Click += CurrentButton_Click;
+                        CurrentButton.Enabled = false;
+
+                        Button SaveButton = new Button();
+                        SaveButton.Name = ModelSaveButtonName;
+                        SaveButton.Text = "Save";
+                        SaveButton.Size = new Size(150, 25);
+                        SaveButton.Click += SaveButton_Click;
+                        SaveButton.Enabled = false;
+
+                        Button DeleteButton = new Button();
+                        DeleteButton.Name = ModelDeleteButtonName;
+                        DeleteButton.Text = "Delete";
+                        DeleteButton.Size = new Size(150, 25);
+                        DeleteButton.Click += DeleteButton_Click;
+                    //}
+                    ButtonsLayoutPanel.Controls.AddRange(new Control[] { AddButton, CurrentButton, SaveButton, DeleteButton});
+
+                //}
+                ModelPageLayoutPanel.Controls.AddRange(new Control[] { NewximConfigFileLayoutPanel, NewximTopologyLayoutPanel, NewximChannelsLayoutPanel,
+                                                                       NewximPacketsLayoutPanel, NewximTimesLayoutPanel,
                                                                        ButtonsLayoutPanel});
             }
         }
@@ -680,6 +933,7 @@ namespace UHLNoCS
                 ((TextBox)Pages.Controls.Find(BooksimMaxPeriodAmountTextBoxName + ModelName, true)[0]).Enabled = true;
                 ((TextBox)Pages.Controls.Find(BooksimInjectionRateTextBoxName + ModelName, true)[0]).Enabled = true;
                 ((ComboBox)Pages.Controls.Find(BooksimSimulationTypeComboBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(BooksimIterationsAmountTextBoxName + ModelName, true)[0]).Enabled = true;
             }
             else
             {
@@ -698,6 +952,57 @@ namespace UHLNoCS
                 ((TextBox)Pages.Controls.Find(BooksimMaxPeriodAmountTextBoxName + ModelName, true)[0]).Enabled = false;
                 ((TextBox)Pages.Controls.Find(BooksimInjectionRateTextBoxName + ModelName, true)[0]).Enabled = false;
                 ((ComboBox)Pages.Controls.Find(BooksimSimulationTypeComboBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(BooksimIterationsAmountTextBoxName + ModelName, true)[0]).Enabled = false;
+            }
+        }
+
+        private void NewximConfigFileCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            string ModelName = Common.GetModelName(((CheckBox)sender).Name);
+            TextBox NewximConfigFileTextBox = (TextBox)Pages.Controls.Find(NewximConfigFilePathTextBoxName + ModelName, true)[0];
+
+            if (((CheckBox)Pages.Controls.Find(NewximConfigGenerationRequiredCheckBoxName + ModelName, true)[0]).Checked)
+            {
+                if (ModelName == "")
+                {
+                    NewximConfigFileTextBox.Text = "Will be set automatically";
+                }
+                else
+                {
+                    NewximConfigFileTextBox.Text = ((Newxim)SimulationController.FindModel(ModelName)).GetConfigFilePath();
+                }
+                NewximConfigFileTextBox.Enabled = false;
+
+                ((ComboBox)Pages.Controls.Find(NewximTopologyComboBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(NewximTopologyArgumentsTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((ComboBox)Pages.Controls.Find(NewximAlgorithmComboBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(NewximTopologyChannelsTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(NewximVirtualChannelsTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(NewximBufferDepthTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(NewximMinPacketSizeTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(NewximMaxPacketSizeTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(NewximPacketInjectionRateTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(NewximSimulationTimeTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(NewximWarmUpTimeTextBoxName + ModelName, true)[0]).Enabled = true;
+                ((TextBox)Pages.Controls.Find(NewximIterationsAmountTextBoxName + ModelName, true)[0]).Enabled = true;
+            }
+            else
+            {
+                NewximConfigFileTextBox.Text = "Double-click to select";
+                NewximConfigFileTextBox.Enabled = true;
+
+                ((ComboBox)Pages.Controls.Find(NewximTopologyComboBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(NewximTopologyArgumentsTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((ComboBox)Pages.Controls.Find(NewximAlgorithmComboBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(NewximTopologyChannelsTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(NewximVirtualChannelsTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(NewximBufferDepthTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(NewximMinPacketSizeTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(NewximMaxPacketSizeTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(NewximPacketInjectionRateTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(NewximSimulationTimeTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(NewximWarmUpTimeTextBoxName + ModelName, true)[0]).Enabled = false;
+                ((TextBox)Pages.Controls.Find(NewximIterationsAmountTextBoxName + ModelName, true)[0]).Enabled = false;
             }
         }
 
@@ -987,14 +1292,92 @@ namespace UHLNoCS
                 string BooksimInjectionRate = BooksimInjectionRateTextBox.Text;
                 BooksimInjectionRateTextBox.Name += ModelName;
 
+                TextBox BooksimIterationsAmountTextBox = (TextBox)ModelPage.Controls.Find(BooksimIterationsAmountTextBoxName, true)[0];
+                string BooksimIterationsAmount = BooksimIterationsAmountTextBox.Text;
+                BooksimIterationsAmountTextBox.Name += ModelName;
+
                 Booksim BookSim = new Booksim(ModelType, ModelName, ModelExePath, ModelResPath,
                                               BooksimConfigCheckBox.Checked, BooksimConfigPath, BooksimTopology, BooksimTopologyArgs,
                                               BooksimAlgorithm, BooksimVirtualChannelsAmount, BooksimVirtualChannelsSize,
                                               BooksimTrafficType, BooksimPacketSize, BooksimSimPeriodLength, BooksimWarmUpPeriods,
-                                              BooksimMaxPeriods, BooksimSimType, BooksimInjectionRate);
+                                              BooksimMaxPeriods, BooksimSimType, BooksimInjectionRate, BooksimIterationsAmount);
                                          
 
                 SimulationController.Models.Add(BookSim);
+            }
+            else if (ModelType == ModelsTypes.Newxim)
+            {
+                CheckBox NewximConfigCheckBox = (CheckBox)ModelPage.Controls.Find(NewximConfigGenerationRequiredCheckBoxName, true)[0];
+                NewximConfigCheckBox.Name += ModelName;
+
+                TextBox NewximConfigTextBox = (TextBox)ModelPage.Controls.Find(NewximConfigFilePathTextBoxName, true)[0];
+                NewximConfigTextBox.Name += ModelName;
+                string NewximConfigPath = "";
+                if (NewximConfigCheckBox.Checked)
+                {
+                    NewximConfigPath = ModelResPath + "\\" + Newxim.DefaultConfigFileName;
+                    NewximConfigTextBox.Text = NewximConfigPath;
+                }
+                else
+                {
+                    NewximConfigPath = NewximConfigTextBox.Text;
+                }
+
+                ComboBox NewximTopologyComboBox = (ComboBox)ModelPage.Controls.Find(NewximTopologyComboBoxName, true)[0];
+                string NewximTopology = NewximTopologyComboBox.Text;
+                NewximTopologyComboBox.Name += ModelName;
+
+                TextBox NewximTopologyArgsTextBox = (TextBox)ModelPage.Controls.Find(NewximTopologyArgumentsTextBoxName, true)[0];
+                string[] NewximTopologyArgs = NewximTopologyArgsTextBox.Text.Split();
+                NewximTopologyArgsTextBox.Name += ModelName;
+
+                ComboBox NewximAlgorithmComboBox = (ComboBox)ModelPage.Controls.Find(NewximAlgorithmComboBoxName, true)[0];
+                string NewximAlgorithm = NewximAlgorithmComboBox.Text;
+                NewximAlgorithmComboBox.Name += ModelName;
+
+                TextBox NewximTopologyChannelsTextBox = (TextBox)ModelPage.Controls.Find(NewximTopologyChannelsTextBoxName, true)[0];
+                string NewximTopologyChannels = NewximTopologyChannelsTextBox.Text;
+                NewximTopologyChannelsTextBox.Name += ModelName;
+
+                TextBox NewximVirtualChannelsTextBox = (TextBox)ModelPage.Controls.Find(NewximVirtualChannelsTextBoxName, true)[0];
+                string NewximVirtualChannels = NewximVirtualChannelsTextBox.Text;
+                NewximVirtualChannelsTextBox.Name += ModelName;
+
+                TextBox NewximBufferDepthTextBox = (TextBox)ModelPage.Controls.Find(NewximBufferDepthTextBoxName, true)[0];
+                string NewximBufferDepth = NewximBufferDepthTextBox.Text;
+                NewximBufferDepthTextBox.Name += ModelName;
+
+                TextBox NewximMinPacketSizeTextBox = (TextBox)ModelPage.Controls.Find(NewximMinPacketSizeTextBoxName, true)[0];
+                string NewximMinPacketSize = NewximMinPacketSizeTextBox.Text;
+                NewximMinPacketSizeTextBox.Name += ModelName;
+
+                TextBox NewximMaxPacketSizeTextBox = (TextBox)ModelPage.Controls.Find(NewximMaxPacketSizeTextBoxName, true)[0];
+                string NewximMaxPacketSize = NewximMaxPacketSizeTextBox.Text;
+                NewximMaxPacketSizeTextBox.Name += ModelName;
+
+                TextBox NewximPacketInjectionRateTextBox = (TextBox)ModelPage.Controls.Find(NewximPacketInjectionRateTextBoxName, true)[0];
+                string NewximPacketInjectionRate = NewximPacketInjectionRateTextBox.Text;
+                NewximPacketInjectionRateTextBox.Name += ModelName;
+
+                TextBox NewximSimTimeTextBox = (TextBox)ModelPage.Controls.Find(NewximSimulationTimeTextBoxName, true)[0];
+                string NewximSimTime = NewximSimTimeTextBox.Text;
+                NewximSimTimeTextBox.Name += ModelName;
+
+                TextBox NewximWarmUpTimeTextBox = (TextBox)ModelPage.Controls.Find(NewximWarmUpTimeTextBoxName, true)[0];
+                string NewximWarmUpTime = NewximWarmUpTimeTextBox.Text;
+                NewximWarmUpTimeTextBox.Name += ModelName;
+
+                TextBox NewximIterationsAmountTextBox = (TextBox)ModelPage.Controls.Find(NewximIterationsAmountTextBoxName, true)[0];
+                string NewximIterationsAmount = NewximIterationsAmountTextBox.Text;
+                NewximIterationsAmountTextBox.Name += ModelName;
+
+                Newxim NewXim = new Newxim(ModelType, ModelName, ModelExePath, ModelResPath,
+                                              NewximConfigCheckBox.Checked, NewximConfigPath, NewximTopology, NewximTopologyArgs,
+                                              NewximAlgorithm, NewximTopologyChannels, NewximVirtualChannels, NewximBufferDepth,
+                                              NewximMinPacketSize, NewximMaxPacketSize, NewximPacketInjectionRate,
+                                              NewximSimTime, NewximWarmUpTime, NewximIterationsAmount);
+
+                SimulationController.Models.Add(NewXim);
             }
 
             Button AddButton = (Button)ModelPage.Controls.Find(ModelAddButtonName, true)[0];
@@ -1033,6 +1416,11 @@ namespace UHLNoCS
             else if (ModelType == ModelsTypes.Booksim)
             {
                 BooksimResultTable TableControl = new BooksimResultTable();
+                ModelResultsPage.Controls.Add(TableControl);
+            }
+            else if (ModelType == ModelsTypes.Newxim)
+            {
+                NewximResultTable TableControl = new NewximResultTable();
                 ModelResultsPage.Controls.Add(TableControl);
             }
             
@@ -1085,7 +1473,27 @@ namespace UHLNoCS
                 ((TextBox)ModelPage.Controls.Find(BooksimMaxPeriodAmountTextBoxName + ModelName, true)[0]).Text = BookSim.GetMaxPeriodsAmount();
                 ((ComboBox)ModelPage.Controls.Find(BooksimSimulationTypeComboBoxName + ModelName, true)[0]).Text = BookSim.GetSimulationType();
                 ((TextBox)ModelPage.Controls.Find(BooksimInjectionRateTextBoxName + ModelName, true)[0]).Text = BookSim.GetInjectionRate();
+                ((TextBox)ModelPage.Controls.Find(BooksimIterationsAmountTextBoxName + ModelName, true)[0]).Text = BookSim.GetIterationsAmount();
             }
+            else if (ConnectedModel.GetType() == ModelsTypes.Newxim)
+            {
+                Newxim NewXim = (Newxim)ConnectedModel;
+                ((TextBox)ModelPage.Controls.Find(NewximConfigFilePathTextBoxName + ModelName, true)[0]).Text = NewXim.GetConfigFilePath();
+                ((CheckBox)ModelPage.Controls.Find(NewximConfigGenerationRequiredCheckBoxName + ModelName, true)[0]).Checked = NewXim.GetConfigGenerationRequired();
+                ((ComboBox)ModelPage.Controls.Find(NewximTopologyComboBoxName + ModelName, true)[0]).Text = NewXim.GetTopology();
+                ((TextBox)ModelPage.Controls.Find(NewximTopologyArgumentsTextBoxName + ModelName, true)[0]).Text = Common.Concatenate(NewXim.GetTopologyArguments());
+                ((ComboBox)ModelPage.Controls.Find(NewximAlgorithmComboBoxName + ModelName, true)[0]).Text = NewXim.GetRoutingAlgorithm();
+                ((TextBox)ModelPage.Controls.Find(NewximTopologyChannelsTextBoxName + ModelName, true)[0]).Text = NewXim.GetTopologyChannels();
+                ((TextBox)ModelPage.Controls.Find(NewximVirtualChannelsTextBoxName + ModelName, true)[0]).Text = NewXim.GetVirtualChannels();
+                ((TextBox)ModelPage.Controls.Find(NewximBufferDepthTextBoxName + ModelName, true)[0]).Text = NewXim.GetBufferDepth();
+                ((TextBox)ModelPage.Controls.Find(NewximMinPacketSizeTextBoxName + ModelName, true)[0]).Text = NewXim.GetMinPacketSize();
+                ((TextBox)ModelPage.Controls.Find(NewximMaxPacketSizeTextBoxName + ModelName, true)[0]).Text = NewXim.GetMaxPacketSize();
+                ((TextBox)ModelPage.Controls.Find(NewximPacketInjectionRateTextBoxName + ModelName, true)[0]).Text = NewXim.GetPacketInjectionRate();
+                ((TextBox)ModelPage.Controls.Find(NewximSimulationTimeTextBoxName + ModelName, true)[0]).Text = NewXim.GetSimulationTime();
+                ((TextBox)ModelPage.Controls.Find(NewximWarmUpTimeTextBoxName + ModelName, true)[0]).Text = NewXim.GetWarmUpTime();
+                ((TextBox)ModelPage.Controls.Find(NewximIterationsAmountTextBoxName + ModelName, true)[0]).Text = NewXim.GetIterationsAmount();
+            }
+
         }
 
         private void SaveButton_Click(object sender, EventArgs e)
@@ -1139,6 +1547,24 @@ namespace UHLNoCS
                 ((Booksim)SimulationController.Models[ModelIndex]).SetMaxPeriodsAmount(((TextBox)ModelPage.Controls.Find(BooksimMaxPeriodAmountTextBoxName + ModelName, true)[0]).Text);
                 ((Booksim)SimulationController.Models[ModelIndex]).SetSimulationType(((ComboBox)ModelPage.Controls.Find(BooksimSimulationTypeComboBoxName + ModelName, true)[0]).Text);
                 ((Booksim)SimulationController.Models[ModelIndex]).SetInjectionRate(((TextBox)ModelPage.Controls.Find(BooksimInjectionRateTextBoxName + ModelName, true)[0]).Text);
+                ((Booksim)SimulationController.Models[ModelIndex]).SetIterationsAmount(((TextBox)ModelPage.Controls.Find(BooksimIterationsAmountTextBoxName + ModelName, true)[0]).Text);
+            }
+            else if (SimulationController.Models[ModelIndex].GetType() == ModelsTypes.Newxim)
+            {
+                ((Newxim)SimulationController.Models[ModelIndex]).SetConfigFilePath(((TextBox)ModelPage.Controls.Find(NewximConfigFilePathTextBoxName + ModelName, true)[0]).Text);
+                ((Newxim)SimulationController.Models[ModelIndex]).SetConfigGenerationRequired(((CheckBox)ModelPage.Controls.Find(NewximConfigGenerationRequiredCheckBoxName + ModelName, true)[0]).Checked);
+                ((Newxim)SimulationController.Models[ModelIndex]).SetTopology(((ComboBox)ModelPage.Controls.Find(NewximTopologyComboBoxName + ModelName, true)[0]).Text);
+                ((Newxim)SimulationController.Models[ModelIndex]).SetTopologyArguments(((TextBox)ModelPage.Controls.Find(NewximTopologyArgumentsTextBoxName + ModelName, true)[0]).Text.Split());
+                ((Newxim)SimulationController.Models[ModelIndex]).SetRoutingAlgorithm(((ComboBox)ModelPage.Controls.Find(NewximAlgorithmComboBoxName + ModelName, true)[0]).Text);
+                ((Newxim)SimulationController.Models[ModelIndex]).SetTopologyChannels(((TextBox)ModelPage.Controls.Find(NewximTopologyChannelsTextBoxName + ModelName, true)[0]).Text);
+                ((Newxim)SimulationController.Models[ModelIndex]).SetVirtualChannels(((TextBox)ModelPage.Controls.Find(NewximVirtualChannelsTextBoxName + ModelName, true)[0]).Text);
+                ((Newxim)SimulationController.Models[ModelIndex]).SetBufferDepth(((TextBox)ModelPage.Controls.Find(NewximBufferDepthTextBoxName + ModelName, true)[0]).Text);
+                ((Newxim)SimulationController.Models[ModelIndex]).SetMinPacketSize(((TextBox)ModelPage.Controls.Find(NewximMinPacketSizeTextBoxName + ModelName, true)[0]).Text);
+                ((Newxim)SimulationController.Models[ModelIndex]).SetMaxPacketSize(((TextBox)ModelPage.Controls.Find(NewximMaxPacketSizeTextBoxName + ModelName, true)[0]).Text);
+                ((Newxim)SimulationController.Models[ModelIndex]).SetPacketInjectionRate(((TextBox)ModelPage.Controls.Find(NewximPacketInjectionRateTextBoxName + ModelName, true)[0]).Text);
+                ((Newxim)SimulationController.Models[ModelIndex]).SetSimulationTime(((TextBox)ModelPage.Controls.Find(NewximSimulationTimeTextBoxName + ModelName, true)[0]).Text);
+                ((Newxim)SimulationController.Models[ModelIndex]).SetWarmUpTime(((TextBox)ModelPage.Controls.Find(NewximWarmUpTimeTextBoxName + ModelName, true)[0]).Text);
+                ((Newxim)SimulationController.Models[ModelIndex]).SetIterationsAmount(((TextBox)ModelPage.Controls.Find(NewximIterationsAmountTextBoxName + ModelName, true)[0]).Text);
             }
         }
 

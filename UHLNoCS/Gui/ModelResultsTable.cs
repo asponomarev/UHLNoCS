@@ -29,7 +29,7 @@ namespace UHLNoCS
             Area.AxisY.Maximum = 100;
             Area.AxisX.Interval = 0.005;
             Area.AxisY.Interval = 5;
-            Area.AxisX.Title = "Flit injection rate, flit/sim.cycle /core";
+            Area.AxisX.Title = "Flits generation rate, flit/sim.cycle";
             Area.AxisY.Title = "Network throughput, flit/sim.cycle";
             Area.AxisX.LineWidth = 3;
             Area.AxisY.LineWidth = 3;

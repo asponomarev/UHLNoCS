@@ -275,13 +275,231 @@ namespace UHLNoCS.Algorithms
                         int ToCol = To % M;
                         int[] ToABCD = GetCoordinates(CoordinatesTable, ToRow, ToCol);
 
-                        int NextVertex = FindPath(CoordinatesTable, FromABCD, ToABCD)[1];
-                        /* вывод номера следующего узла в консоль
-                        можно вывести в окно на вкладке Simulation Logs, если написать ToLogsTextBox вместо Console.WriteLine
-                        Console.WriteLine("From X Y: " + FromRow.ToString() + " " + FromCol.ToString());
-                        Console.WriteLine("To X Y: " + ToRow.ToString() + " " + ToCol.ToString());
-                        Console.WriteLine("Next vertex: " + NextVertex.ToString() + "\r\n");
-                        */
+                        int NextVertex = FindPath(CoordinatesTable, FromABCD, ToABCD)[1];                       
+
+                        int Port = -1;
+                        for (int PortNumber = 0; PortNumber < Network.PortNumber; PortNumber++)
+                        {
+                            if (Netlist[From, PortNumber] == NextVertex)
+                            {
+                                Port = PortNumber;
+                            }
+                        }
+
+                        Routing[From, To] = Port;
+                    }
+                }
+            }
+
+            return Routing;
+        }
+
+        /*
+	    * Function creates routing table
+	    * for circulant net on chip
+	    * using GreedyPromotion algorithm.
+	    */
+        public static int CirculantCoordinatesAmount = 3;
+
+        public static int[] FindBestCoefs(int Node, int N, int S1, int S2)
+        {
+            int MinSum = 1000;
+            int[] AnsCoefs = new int[] { 1000, 1000, 1000 };
+            for (int Alpha0 = -(int)Math.Round(Math.Sqrt(N / 2)); Alpha0 < Math.Round(Math.Sqrt(N / 2)) + 1; Alpha0++)
+            {
+                for (int Alpha1 = -(int)Math.Round(Math.Sqrt(N / 2)); Alpha1 < Math.Round(Math.Sqrt(N / 2)) + 1; Alpha1++)
+                {
+                    for (int Alpha2 = -(int)Math.Round(Math.Sqrt(N / 2)); Alpha2 < Math.Round(Math.Sqrt(N / 2)) + 1; Alpha2++)
+                    {
+                        if (Alpha0 * N + Alpha1 * S1 + Alpha2 * S2 == Node && Math.Abs(Alpha1) + Math.Abs(Alpha2) < MinSum)
+                        {
+                            MinSum = Math.Abs(Alpha1) + Math.Abs(Alpha2);
+                            AnsCoefs = new int[] { Alpha0, Alpha1, Alpha2 };
+                        }
+                    }
+                }
+            }
+            return AnsCoefs;
+        }
+
+        public static int[,] Coordinates(int N, int S1, int S2)
+        {
+            int[,] CoordTable = new int[N, CirculantCoordinatesAmount];
+
+            for (int Node = 0; Node < N; Node++)
+            {
+                int[] Coords = FindBestCoefs(Node, N, S1, S2);
+
+                for (int Coordinate = 0; Coordinate < CirculantCoordinatesAmount; Coordinate++)
+                {
+                    CoordTable[Node, Coordinate] = Coords[Coordinate];
+                }
+            }
+
+            return CoordTable;
+        }
+
+        public static int StepToEnd(int[,] Coords, int S1, int S2, int Curr, int ToNode, int[] Route)
+        {
+            int CurrMS1 = Curr - S1;
+            int CurrMS2 = Curr - S2;
+            int CurrPS1 = Curr + S1;
+            int CurrPS2 = Curr + S2;
+
+            if (CurrMS1 == ToNode)
+            {
+                return CurrMS1;
+            }
+            else if (CurrMS2 == ToNode)
+            {
+                return CurrMS2;
+            }
+            else if (CurrPS1 == ToNode)
+            {
+                return CurrPS1;
+            }
+            else if (CurrPS2 == ToNode)
+            {
+                return CurrPS2;
+            }
+            else
+            {
+                if (!Route.Contains(CurrMS1) && CurrMS1 > -1)
+                {
+                    return CurrMS1;
+                }
+                else if (!Route.Contains(CurrMS2) && CurrMS2 > -1)
+                {
+                    return CurrMS2;
+                }
+                else if (!Route.Contains(CurrPS1) && CurrPS1 > -1)
+                {
+                    return CurrPS1;
+                }
+                else if (!Route.Contains(CurrPS2) && CurrPS2 > -1)
+                {
+                    return CurrPS2;
+                }
+            }
+
+            return -1;
+        }
+
+        public static List<int> FindRoute(int N, int S1, int S2, int FromNode, int ToNode)
+        {
+            int[,] Coords = Coordinates(N, S1, S2);
+            int Curr = FromNode;
+
+            int[] CurrCoord = new int[CirculantCoordinatesAmount];
+            for (int Coordinate = 0; Coordinate < CirculantCoordinatesAmount; Coordinate++)
+            {
+                CurrCoord[Coordinate] = Coords[Curr, Coordinate];
+            }
+
+            List<int> Route = new List<int>();
+            Route.Add(Curr);
+
+            while (Curr != ToNode)
+            {
+                if ((Curr + S1) % N == ToNode || (Curr + S2) % N == ToNode || (ToNode + S1) % N == Curr || (ToNode + S2) % N == Curr)
+                {
+                    Route.Add(ToNode);
+                    return Route;
+                }
+                else
+                {
+                    if (CurrCoord[0] == 0 && Curr != ToNode)
+                    {
+                        if (CurrCoord[1] > 0 && !Route.Contains(Curr + S1))
+                        {
+                            for (int Alpha1 = 0; Alpha1 < CurrCoord[1]; Alpha1++)
+                            {
+                                if (Curr != ToNode)
+                                {
+                                    Curr += S1;
+                                    for (int Coordinate = 0; Coordinate < CirculantCoordinatesAmount; Coordinate++)
+                                    {
+                                        CurrCoord[Coordinate] = Coords[Curr, Coordinate];
+                                    }
+                                    Route.Add(Curr);
+                                }
+                            }
+                        }
+                        if (CurrCoord[2] > 0 && !Route.Contains(Curr + S2))
+                        {
+                            for (int Alpha2 = 0; Alpha2 < CurrCoord[2]; Alpha2++)
+                            {
+                                if (Curr != ToNode)
+                                {
+                                    Curr += S2;
+                                    for (int Coordinate = 0; Coordinate < CirculantCoordinatesAmount; Coordinate++)
+                                    {
+                                        CurrCoord[Coordinate] = Coords[Curr, Coordinate];
+                                    }
+                                    Route.Add(Curr);
+                                }
+                            }
+                        }
+                    }
+                    if (CurrCoord[0] == 1 && Curr != ToNode)
+                    {
+                        if (CurrCoord[1] < 0 && Curr != ToNode && !Route.Contains(Curr - S1))
+                        {
+                            Curr -= S1;
+                            for (int Coordinate = 0; Coordinate < CirculantCoordinatesAmount; Coordinate++)
+                            {
+                                CurrCoord[Coordinate] = Coords[Curr, Coordinate];
+                            }
+                            Route.Add(Curr);
+                        }
+                        else if (CurrCoord[2] < 0 && Curr != ToNode && !Route.Contains(Curr - S2))
+                        {
+                            Curr -= S2;
+                            for (int Coordinate = 0; Coordinate < CirculantCoordinatesAmount; Coordinate++)
+                            {
+                                CurrCoord[Coordinate] = Coords[Curr, Coordinate];
+                            }
+                            Route.Add(Curr);
+                        }
+                    }
+                    if ((Curr == Route.Last() || Curr == Route[Route.Count - 2]) && Curr != ToNode)
+                    {
+                        int[] RouteArr = new int[Route.Count];
+                        for (int Index = 0; Index < RouteArr.Length; Index++)
+                        {
+                            RouteArr[Index] = Route[Index];
+                        }
+
+                        Curr = StepToEnd(Coords, S1, S2, Curr, ToNode, RouteArr);
+                        for (int Coordinate = 0; Coordinate < CirculantCoordinatesAmount; Coordinate++)
+                        {
+                            CurrCoord[Coordinate] = Coords[Curr, Coordinate];
+                        }
+                        Route.Add(Curr);
+                    }
+                }
+                return Route; // only next
+            }
+            return Route; // full path
+        }
+
+        public static int[,] CreateRouting(int N, int S1, int S2, int[,] Netlist)
+        {
+            int VertexAmount = N;
+            int[,] Routing = new int[VertexAmount, VertexAmount];
+
+            for (int From = 0; From < VertexAmount; From++)
+            {
+                for (int To = 0; To < VertexAmount; To++)
+                {
+                    if (From == To)
+                    {
+                        Routing[From, To] = Network.PortNumber;
+                    }
+                    else
+                    {
+                        int NextVertex = FindRoute(N, S1, S2, From, To)[1];
+
                         int Port = -1;
                         for (int PortNumber = 0; PortNumber < Network.PortNumber; PortNumber++)
                         {
