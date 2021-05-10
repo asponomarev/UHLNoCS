@@ -59,9 +59,10 @@
             this.LogsPage = new System.Windows.Forms.TabPage();
             this.LogsButton = new System.Windows.Forms.Button();
             this.ResultsPage = new System.Windows.Forms.TabPage();
+            this.CompareButton = new System.Windows.Forms.Button();
+            this.TablesGraphsButton = new System.Windows.Forms.Button();
             this.ExportResultsButton = new System.Windows.Forms.Button();
             this.ModelsResultsPages = new System.Windows.Forms.TabControl();
-            this.TablesGraphsButton = new System.Windows.Forms.Button();
             this.Pages.SuspendLayout();
             this.SettingsPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModelsStateTable)).BeginInit();
@@ -387,6 +388,7 @@
             // 
             // ResultsPage
             // 
+            this.ResultsPage.Controls.Add(this.CompareButton);
             this.ResultsPage.Controls.Add(this.TablesGraphsButton);
             this.ResultsPage.Controls.Add(this.ExportResultsButton);
             this.ResultsPage.Controls.Add(this.ModelsResultsPages);
@@ -397,9 +399,29 @@
             this.ResultsPage.Text = "Simulation results";
             this.ResultsPage.UseVisualStyleBackColor = true;
             // 
+            // CompareButton
+            // 
+            this.CompareButton.Location = new System.Drawing.Point(749, 502);
+            this.CompareButton.Name = "CompareButton";
+            this.CompareButton.Size = new System.Drawing.Size(150, 25);
+            this.CompareButton.TabIndex = 3;
+            this.CompareButton.Text = "Compare results";
+            this.CompareButton.UseVisualStyleBackColor = true;
+            this.CompareButton.Click += new System.EventHandler(this.CompareButton_Click);
+            // 
+            // TablesGraphsButton
+            // 
+            this.TablesGraphsButton.Location = new System.Drawing.Point(518, 502);
+            this.TablesGraphsButton.Name = "TablesGraphsButton";
+            this.TablesGraphsButton.Size = new System.Drawing.Size(150, 25);
+            this.TablesGraphsButton.TabIndex = 2;
+            this.TablesGraphsButton.Text = "Show graphs";
+            this.TablesGraphsButton.UseVisualStyleBackColor = true;
+            this.TablesGraphsButton.Click += new System.EventHandler(this.TablesGraphsButton_Click);
+            // 
             // ExportResultsButton
             // 
-            this.ExportResultsButton.Location = new System.Drawing.Point(369, 502);
+            this.ExportResultsButton.Location = new System.Drawing.Point(278, 501);
             this.ExportResultsButton.Name = "ExportResultsButton";
             this.ExportResultsButton.Size = new System.Drawing.Size(150, 25);
             this.ExportResultsButton.TabIndex = 1;
@@ -414,16 +436,6 @@
             this.ModelsResultsPages.SelectedIndex = 0;
             this.ModelsResultsPages.Size = new System.Drawing.Size(1146, 493);
             this.ModelsResultsPages.TabIndex = 0;
-            // 
-            // TablesGraphsButton
-            // 
-            this.TablesGraphsButton.Location = new System.Drawing.Point(609, 503);
-            this.TablesGraphsButton.Name = "TablesGraphsButton";
-            this.TablesGraphsButton.Size = new System.Drawing.Size(150, 25);
-            this.TablesGraphsButton.TabIndex = 2;
-            this.TablesGraphsButton.Text = "Show graphs";
-            this.TablesGraphsButton.UseVisualStyleBackColor = true;
-            this.TablesGraphsButton.Click += new System.EventHandler(this.TablesGraphsButton_Click);
             // 
             // MainForm
             // 
@@ -477,6 +489,7 @@
         private System.Windows.Forms.Button ExportResultsButton;
         private System.Windows.Forms.TabControl ModelsResultsPages;
         private System.Windows.Forms.Button TablesGraphsButton;
+        private System.Windows.Forms.Button CompareButton;
     }
 }
 

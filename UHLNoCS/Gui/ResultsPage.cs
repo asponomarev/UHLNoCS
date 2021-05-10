@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -17,9 +18,15 @@ namespace UHLNoCS
     {
         public static string ResultFileName = "result.csv";
         public static string ResultGraphFilename = "result.png";
+        public static string ComparisonFolderName = "comparison";
 
         public void ClearResultsTables()
         {
+            if (SimulationController.Models.Count != ModelsResultsPages.TabPages.Count)
+            {
+                ModelsResultsPages.TabPages.RemoveAt(ModelsResultsPages.TabPages.Count - 1);
+            }
+
             foreach (TabPage Page in ModelsResultsPages.TabPages)
             {
                 DataGridView Table = (DataGridView)Page.Controls[0].Controls[0];
@@ -201,6 +208,14 @@ namespace UHLNoCS
                     Graph.SaveImage(ConnectedModel.GetResultsDirectoryPath() + "\\" + ResultGraphFilename, System.Drawing.Imaging.ImageFormat.Png);
                 }
             }
+
+            if (CompareButton.Enabled == false)
+            {
+                string ComparisonFolder = Directory.GetCurrentDirectory() + "\\" + SimulationFolderName + "\\" + SimulationController.SimulationName + "\\" + ComparisonFolderName;
+                Directory.CreateDirectory(ComparisonFolder);
+                Chart CompareGraph = (Chart)ModelsResultsPages.TabPages[ModelsResultsPages.TabPages.Count - 1].Controls[0].Controls[0];
+                CompareGraph.SaveImage(ComparisonFolder + "\\" + ResultGraphFilename, System.Drawing.Imaging.ImageFormat.Png);
+            }
         }
 
         private void ResultsToCsv(Model ConnectedModel)
@@ -246,8 +261,11 @@ namespace UHLNoCS
                 TablesGraphsButton.Text = "Show tables";
                 foreach (TabPage ModelResultsPage in ModelsResultsPages.TabPages)
                 {
-                    ((DataGridView)ModelResultsPage.Controls[0].Controls[0]).Visible = false;
-                    ((Chart)ModelResultsPage.Controls[0].Controls[1]).Visible = true;
+                    if (ModelResultsPage.Controls[0].Controls.Count != 1)
+                    {
+                        ((DataGridView)ModelResultsPage.Controls[0].Controls[0]).Visible = false;
+                        ((Chart)ModelResultsPage.Controls[0].Controls[1]).Visible = true;
+                    }
                 }
             }
             else
@@ -255,10 +273,42 @@ namespace UHLNoCS
                 TablesGraphsButton.Text = "Show graphs";
                 foreach (TabPage ModelResultsPage in ModelsResultsPages.TabPages)
                 {
-                    ((DataGridView)ModelResultsPage.Controls[0].Controls[0]).Visible = true;
-                    ((Chart)ModelResultsPage.Controls[0].Controls[1]).Visible = false;
+                    if (ModelResultsPage.Controls[0].Controls.Count != 1)
+                    {
+                        ((DataGridView)ModelResultsPage.Controls[0].Controls[0]).Visible = true;
+                        ((Chart)ModelResultsPage.Controls[0].Controls[1]).Visible = false;
+                    }
                 }
             }
+        }
+
+        private void CompareButton_Click(object sender, EventArgs e)
+        {
+            if (SimulationController.SimulationState[3] != State.Finished)
+            {
+                MessageBox.Show("It is possible to compare results only after the end of a simulation", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            List<Series> ModelsSeries = new List<Series>();
+            List<string> ModelsNames = new List<string>();
+            foreach (TabPage ModelResultsPage in ModelsResultsPages.TabPages)
+            {
+                Chart ModelChart = (Chart)ModelResultsPage.Controls[0].Controls[1];
+                Series ModelSeries = ModelChart.Series[0];
+                ModelsSeries.Add(ModelSeries);
+
+                ModelsNames.Add(ModelResultsPage.Text);
+            }
+
+            TabPage ComparePage = new TabPage();
+            ComparePage.Text = "Results comparison";
+            ModelsResultsPages.TabPages.Add(ComparePage);
+
+            CompareResultsTable CompareControl = new CompareResultsTable(ModelsSeries, ModelsNames);
+            ComparePage.Controls.Add(CompareControl);
+
+            CompareButton.Enabled = false;
         }
 
     }

@@ -214,6 +214,8 @@ namespace UHLNoCS
 
         private void NewSimulationButton_Click(object sender, EventArgs e)
         {
+            CompareButton.Enabled = true;
+
             SimulationController.ToNewSimulation();           
             UpdateTablesStates();
             ClearResultsTables();
@@ -222,7 +224,7 @@ namespace UHLNoCS
             StartSimulationButton.Enabled = true;
             NewSimulationButton.Enabled = false;
             ModelAddButton.Enabled = true;
-            DeleteModelButton.Enabled = true;
+            DeleteModelButton.Enabled = true;          
 
             LogsTextBox.Clear();
         }

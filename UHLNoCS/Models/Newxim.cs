@@ -23,9 +23,9 @@ namespace UHLNoCS.Models
         public static string DefaultTopologyChannels = "1";
         public static string DefaultVirtualChannels = "1";
         public static string DefaultBufferDepth = "2";
-        public static string DefaultMinPacketSize = "1";
-        public static string DefaultMaxPacketSize = "1";
-        public static string DefaultPacketInjectionRate = "1";
+        public static string DefaultMinPacketSize = "10";
+        public static string DefaultMaxPacketSize = "10";
+        public static string DefaultPacketInjectionRate = "0.05";
         public static string DefaultSimulationTime = "100000";
         public static string DefaultWarmUpTime = "0";
         public static string DefaultIterationsAmount = "20";

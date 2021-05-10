@@ -52,6 +52,12 @@
     <Compile Include="Algorithms\GreedyPromotion.cs" />
     <Compile Include="Algorithms\PO.cs" />
     <Compile Include="Algorithms\ROU.cs" />
+    <Compile Include="Gui\CompareResultsTable.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Gui\CompareResultsTable.Designer.cs">
+      <DependentUpon>CompareResultsTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Gui\BooksimResultTable.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -109,6 +115,9 @@
     <Compile Include="Topologies\Torus.cs" />
     <EmbeddedResource Include="Gui\BooksimResultTable.resx">
       <DependentUpon>BooksimResultTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Gui\CompareResultsTable.resx">
+      <DependentUpon>CompareResultsTable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Gui\NewximResultTable.resx">
       <DependentUpon>NewximResultTable.cs</DependentUpon>
