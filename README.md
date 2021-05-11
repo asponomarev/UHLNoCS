@@ -1,1 +1,3 @@
-Universal High-Level Network-on-Chip Simulator 
+Universal High-Level Network-on-Chip Simulator  
+  
+UHLNoCS - folder with source codes
